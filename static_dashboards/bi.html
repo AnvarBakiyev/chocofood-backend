@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chocofamily Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#0c1220;color:#e2e8f0;height:100vh;overflow:hidden}
+.layout{display:flex;flex-direction:column;height:100vh}
+.topbar{background:#070b14;border-bottom:1px solid rgba(255,255,255,.06);padding:0 22px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-size:14px;font-weight:700;color:#fff}.logo span{color:#F5A623}
+.pr{display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;background:#22c55e;border-radius:50%;animation:pu 2s infinite}
+@keyframes pu{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+.pt{font-size:11px;color:#475569}
+.clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:#334155}
+.body{display:flex;flex:1;overflow:hidden}
+.sb{width:320px;background:#070b14;border-right:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;flex-shrink:0}
+.sbh{padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
+.sbhl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#334155}
+.sbhs{font-size:11px;color:#22c55e;margin-top:3px}
+.feed{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px}
+.feed::-webkit-scrollbar{width:3px}
+.feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.ic{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-left:3px solid;border-radius:9px;padding:11px 13px;transition:.2s;animation:si .35s ease}
+@keyframes si{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.ic:hover{background:rgba(255,255,255,.04)}
+.ich{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px}
+.icico{font-size:13px;flex-shrink:0;margin-top:1px}
+.ict{font-size:12px;font-weight:600;color:#e2e8f0;flex:1;line-height:1.35}
+.nb{font-size:9px;background:#F5A623;color:#000;padding:1px 5px;border-radius:3px;font-weight:700;flex-shrink:0}
+.icb{font-size:11px;color:#64748b;line-height:1.6;margin-bottom:7px}
+.ica{font-size:11px;color:#60a5fa;background:rgba(59,130,246,.07);padding:5px 8px;border-radius:5px;line-height:1.5}
+.icf{display:flex;align-items:center;justify-content:space-between;margin-top:7px}
+.icp{font-size:9.5px;background:rgba(255,255,255,.05);padding:2px 6px;border-radius:4px;color:#475569}
+.conf{display:flex;align-items:center;gap:5px}
+.cbg{width:44px;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.cfill{height:100%;border-radius:2px}
+.cval{font-size:9px;font-family:'JetBrains Mono',monospace;color:#334155}
+.main{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.main::-webkit-scrollbar{width:4px}
+.main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.sect{font-size:10px;font-weight:600;color:#334155;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mc{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;transition:.2s}
+.mc:hover{background:rgba(255,255,255,.04);transform:translateY(-1px)}
+.mch{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.mci{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.mcn{font-size:12.5px;font-weight:600}
+.mrows{display:flex;flex-direction:column;gap:6px}
+.mr{display:flex;align-items:center;justify-content:space-between}
+.mrl{font-size:10.5px;color:#475569}
+.mrv{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;display:flex;align-items:center;gap:5px}
+.mrd{font-size:9.5px;font-family:'JetBrains Mono',monospace}
+.up{color:#22c55e}.dn{color:#ef4444}.nt{color:#475569}
+.cc{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px}
+.cw{position:relative;height:130px}
+.cl{display:flex;gap:14px;margin-top:8px}
+.coc{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px 14px;transition:.2s}
+.coc:hover{background:rgba(255,255,255,.04)}
+.coh{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.con{font-size:12px;font-weight:600}
+.cot{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.cobg{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.cofill{height:100%;border-radius:2px;transition:width .5s}
+.cov{display:flex;justify-content:space-between;margin-bottom:6px}
+.covl{font-size:10.5px;color:#475569}
+.covv{font-family:'JetBrains Mono',monospace;font-size:12px}
+.com{font-size:10.5px;color:#fbbf24;background:rgba(251,191,36,.06);padding:4px 7px;border-radius:5px}
+.offline{font-size:10px;color:#ef4444;background:rgba(239,68,68,.08);padding:2px 8px;border-radius:4px;margin-left:12px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef} = React;
+const API = 'http://localhost:8300';
+
+const SEV_COL = {critical:'#ef4444',high:'#f97316',medium:'#F5A623',low:'#22c55e'};
+const TYPE_COL = {alert:'#ef4444',watch:'#F5A623',opportunity:'#22c55e',insight:'#3b82f6'};
+
+const MOCK_M = {
+  ts: new Date().toISOString(),
+  sr: {mau:14200,mau_wow:3.2,locations:89,locations_target:150,gmv:18500000,gmv_wow:8.1,
+       retention_m3:90.2,retention_m12:83.1,avg_check:4200,nps:68,activation_days:22,new_week:7,dead_pct:31.5},
+  chocolife: {active_12m:109000,active_wow:-1.2,orders_month:24100,cac:2850,
+              net_margin:38400000,payment_ok:71.3,clv:14562,nps:61},
+  ecosystem: {mau:112000,mau_wow:-2.1,new_visitors_w:8900,new_visitors_wow:-5.3,
+              buyers_m:33800,buyers_yoy:21.8,dau_mau:0.09},
+};
+const MOCK_INS = [
+  {id:'kaspi',type:'alert',sev:'critical',icon:'🔴',confidence:0.94,is_new:true,product:'Smart Restaurant',
+   title:'Kaspi входит в рестораны',
+   body:'Kaspi.kz (MAU 8.2M) запустил кешбэк в ресторанной категории. Угроза SR loyalty layer — у Kaspi 73x больше MAU.',
+   action:'Усилить операционную ценность SR: аналитика продаж, управление меню'},
+  {id:'funnel',type:'insight',sev:'high',icon:'💡',confidence:0.85,is_new:true,product:'Ecosystem',
+   title:'Воронка иссякает — leading indicator',
+   body:'New visitors -5.3% WoW при росте buyers +21.8% YoY. Лаг до падения buyers: ~8 недель.',
+   action:'Метрика: new_visitors/buyers ratio. Порог < 0.25 — emergency UA'},
+  {id:'cac',type:'insight',sev:'medium',icon:'💡',confidence:0.91,is_new:false,product:'Chocolife',
+   title:'CAC — исторический максимум (x4.2)',
+   body:'2,850 тг — рост с 684 тг в 2019. CLV/CAC упал с 21x до 5x. Маркетинг-микс неустойчив.',
+   action:'Аудит channel efficiency: 3-4 канала дают 80% LTV-позитивного роста'},
+  {id:'astana',type:'opportunity',sev:'medium',icon:'🟢',confidence:0.76,is_new:false,product:'Smart Restaurant',
+   title:'Астана: окно для SR-экспансии',
+   body:'Новые пользователи из Астаны +18% WoW. Premium-сегмент не покрыт конкурентами.',
+   action:'Pilot: 5 anchor ресторанов по модели Bahandi'},
+  {id:'payment',type:'alert',sev:'medium',icon:'🟠',confidence:0.82,is_new:false,product:'Chocolife',
+   title:'Payment success 71.3% — ниже целевого',
+   body:'Ниже best-in-class (>90%). Каждый failed payment — потерянная транзакция и NPS-удар.',
+   action:'A/B тест: Apple Pay / Google Pay как primary CTA. Uplift +12-15%'},
+];
+const MOCK_COMP = [
+  {name:'Kaspi.kz',label:'MAU',value:'8.2M',threat:9,col:'#ef4444',move:'Рестораны: кешбэк'},
+  {name:'Glovo KZ',label:'Заказов/день',value:'12,000',threat:7,col:'#f97316',move:'Delivery fee -200 тг'},
+  {name:'Yandex KZ',label:'Заказов еды/день',value:'8,000',threat:5,col:'#eab308',move:'Замедление роста'},
+  {name:'2GIS',label:'MAU',value:'2.1M',threat:3,col:'#22c55e',move:'Отзывы расширяются'},
+];
+const MOCK_H = Array.from({length:12},(_,i)=>({
+  label:`W${i+1}`,
+  mau: 80000+i*3000+Math.round(Math.random()*2000-1000),
+  buyers: 26000+i*700+Math.round(Math.random()*500-250),
+  cac: 2200+i*60+Math.round(Math.random()*100-50),
+}));
+
+function fmt(v,short){
+  if(typeof v!=='number')return v;
+  if(v>=1000000)return (v/1000000).toFixed(1)+'M';
+  if(v>=1000&&short)return Math.round(v/1000)+'K';
+  return v.toLocaleString('ru');
+}
+
+function TopBar({lastUpdate,offline}){
+  const [now,setNow]=useState(new Date());
+  useEffect(()=>{const t=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(t);},[]);
+  const tf=d=>d.toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  return(
+    <div className="topbar">
+      <div className="pr">
+        <div className="logo">🍫 Choco<span>Intelligence</span></div>
+        <div style={{display:'flex',alignItems:'center',gap:7,marginLeft:16}}>
+          <div className="dot"/>
+          <span className="pt">
+            {offline?'Mock данные':'Live · '}{lastUpdate&&!offline?'обновлено '+tf(lastUpdate):''}
+          </span>
+          {offline&&<span className="offline">API offline</span>}
+        </div>
+      </div>
+      <span className="clock">{tf(now)}</span>
+    </div>
+  );
+}
+
+function InsightCard({ins,tick}){
+  const bc=TYPE_COL[ins.type]||'#475569';
+  const cc=SEV_COL[ins.sev]||'#3b82f6';
+  const pct=Math.round((ins.confidence||0.5)*100);
+  return(
+    <div className="ic" style={{borderLeftColor:bc}} key={ins.id+tick}>
+      <div className="ich">
+        <span className="icico">{ins.icon}</span>
+        <span className="ict">{ins.title}</span>
+        {ins.is_new&&<span className="nb">NEW</span>}
+      </div>
+      <div className="icb">{ins.body}</div>
+      <div className="ica">→ {ins.action}</div>
+      <div className="icf">
+        <span className="icp">{ins.product}</span>
+        <div className="conf">
+          <div className="cbg"><div className="cfill" style={{width:pct+'%',background:cc}}/></div>
+          <span className="cval">{pct}%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MRow({label,value,delta}){
+  const cls=delta>0?'up':delta<0?'dn':'nt';
+  const sign=delta>0?'+':'';
+  return(
+    <div className="mr">
+      <span className="mrl">{label}</span>
+      <div className="mrv">
+        <span>{value}</span>
+        {delta!==undefined&&delta!==null&&<span className={`mrd ${cls}`}>{sign}{delta}%</span>}
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({title,icon,bg,rows}){
+  return(
+    <div className="mc">
+      <div className="mch">
+        <div className="mci" style={{background:bg}}>{icon}</div>
+        <span className="mcn">{title}</span>
+      </div>
+      <div className="mrows">{rows.map((r,i)=><MRow key={i} {...r}/>)}</div>
+    </div>
+  );
+}
+
+function TrendChart({history}){
+  const ref=useRef(null);
+  const ch=useRef(null);
+  useEffect(()=>{
+    if(!history||!history.length||!ref.current)return;
+    if(ch.current){ch.current.destroy();ch.current=null;}
+    const tip={backgroundColor:'#070b14',titleColor:'#e2e8f0',bodyColor:'#64748b',padding:10,cornerRadius:8};
+    const tk={color:'#334155',font:{family:'JetBrains Mono',size:9}};
+    ch.current=new Chart(ref.current,{
+      type:'line',
+      data:{
+        labels:history.map(h=>h.label),
+        datasets:[
+          {label:'Ecosystem MAU',data:history.map(h=>h.mau),borderColor:'#F5A623',
+           backgroundColor:'rgba(245,166,35,.04)',borderWidth:2,pointRadius:2,tension:.4,fill:true},
+          {label:'Monthly Buyers',data:history.map(h=>h.buyers),borderColor:'#22c55e',
+           backgroundColor:'rgba(34,197,94,.04)',borderWidth:2,pointRadius:2,tension:.4,fill:true},
+          {label:'CAC',data:history.map(h=>h.cac),borderColor:'#ef4444',
+           backgroundColor:'transparent',borderWidth:1.5,pointRadius:2,tension:.4,fill:false,yAxisID:'y2'},
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#475569',font:{size:9},boxWidth:10}},tooltip:tip},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,.03)'},ticks:tk},
+          y:{grid:{color:'rgba(255,255,255,.03)'},ticks:tk,position:'left'},
+          y2:{grid:{display:false},ticks:{...tk,color:'rgba(239,68,68,.6)'},position:'right'},
+        }
+      }
+    });
+    return()=>{if(ch.current)ch.current.destroy();};
+  },[history]);
+  return <div className="cw"><canvas ref={ref}/></div>;
+}
+
+function CompCard({c}){
+  const pct=(c.threat/10)*100;
+  const tl=c.threat>=8?'КРИТИЧНО':c.threat>=6?'ВЫСОКИЙ':c.threat>=4?'СРЕДНИЙ':'НИЗКИЙ';
+  return(
+    <div className="coc">
+      <div className="coh">
+        <span className="con">{c.name}</span>
+        <span className="cot" style={{background:c.col+'22',color:c.col}}>{tl}</span>
+      </div>
+      <div className="cobg"><div className="cofill" style={{width:pct+'%',background:c.col}}/></div>
+      <div className="cov"><span className="covl">{c.label}</span><span className="covv">{c.value}</span></div>
+      <div className="com">⚡ {c.move}</div>
+    </div>
+  );
+}
+
+function App(){
+  const [m,setM]=useState(MOCK_M);
+  const [ins,setIns]=useState(MOCK_INS);
+  const [comp,setComp]=useState(MOCK_COMP);
+  const [hist,setHist]=useState(MOCK_H);
+  const [lastUpdate,setLastUpdate]=useState(null);
+  const [offline,setOffline]=useState(false);
+  const [tick,setTick]=useState(0);
+
+  const fetchAll=async()=>{
+    try{
+      const [rm,ri,rc,rh]=await Promise.all([
+        fetch(API+'/api/metrics').then(r=>r.json()),
+        fetch(API+'/api/insights?limit=6').then(r=>r.json()),
+        fetch(API+'/api/competitors').then(r=>r.json()),
+        fetch(API+'/api/history').then(r=>r.json()),
+      ]);
+      setM(rm);setIns(ri);setComp(rc);setHist(rh);
+      setLastUpdate(new Date());setOffline(false);
+    }catch{
+      setOffline(true);setLastUpdate(new Date());
+    }
+    setTick(t=>t+1);
+  };
+
+  useEffect(()=>{fetchAll();const iv=setInterval(fetchAll,15000);return()=>clearInterval(iv);},[]);
+
+  const sr=m.sr||{};const ch=m.chocolife||{};const eco=m.ecosystem||{};
+
+  const srRows=[
+    {label:'MAU',value:fmt(sr.mau,true),delta:sr.mau_wow},
+    {label:'Локации',value:`${sr.locations}/${sr.locations_target}`},
+    {label:'GMV / мес',value:fmt(sr.gmv,true)+'₸',delta:sr.gmv_wow},
+    {label:'Retention M+12',value:sr.retention_m12+'%'},
+    {label:'Новых / неделю',value:sr.new_week},
+    {label:'Мёртвых точек',value:sr.dead_pct+'%'},
+  ];
+  const chRows=[
+    {label:'Active 12M',value:fmt(ch.active_12m,true),delta:ch.active_wow},
+    {label:'Заказов / мес',value:fmt(ch.orders_month,true)},
+    {label:'CAC',value:fmt(ch.cac)+'₸'},
+    {label:'Payment OK',value:ch.payment_ok+'%'},
+    {label:'CLV / CAC',value:Math.round(ch.clv/ch.cac)+'×'},
+  ];
+  const ecoRows=[
+    {label:'Ecosystem MAU',value:fmt(eco.mau,true),delta:eco.mau_wow},
+    {label:'New visitors / нед',value:fmt(eco.new_visitors_w,true),delta:eco.new_visitors_wow},
+    {label:'Buyers / мес',value:fmt(eco.buyers_m,true),delta:eco.buyers_yoy},
+    {label:'DAU / MAU',value:eco.dau_mau},
+  ];
+
+  return(
+    <div className="layout">
+      <TopBar lastUpdate={lastUpdate} offline={offline}/>
+      <div className="body">
+        <aside className="sb">
+          <div className="sbh">
+            <div className="sbhl">🧠 Intelligence Feed</div>
+            <div className="sbhs">▶ Система анализирует данные · обновление 15с</div>
+          </div>
+          <div className="feed">
+            {ins.map(i=><InsightCard key={i.id+tick} ins={i} tick={tick}/>)}
+          </div>
+        </aside>
+        <main className="main">
+          <div>
+            <div className="sect">Продуктовые метрики · live</div>
+            <div className="g3">
+              <MetricCard title="Smart Restaurant" icon="🍽️" bg="rgba(34,197,94,.1)" rows={srRows}/>
+              <MetricCard title="Chocolife.me" icon="🎫" bg="rgba(245,166,35,.1)" rows={chRows}/>
+              <MetricCard title="Ecosystem" icon="🌐" bg="rgba(59,130,246,.1)" rows={ecoRows}/>
+            </div>
+          </div>
+          <div>
+            <div className="sect">Тренды · последние 12 недель</div>
+            <div className="cc">
+              <TrendChart history={hist}/>
+              <div className="cl">
+                <span style={{fontSize:10,color:'#F5A623'}}>● Ecosystem MAU</span>
+                <span style={{fontSize:10,color:'#22c55e'}}>● Monthly Buyers</span>
+                <span style={{fontSize:10,color:'#ef4444'}}>● CAC (правая ось)</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="sect">Конкурентный радар</div>
+            <div className="g2">
+              {comp.map(c=><CompCard key={c.name} c={c}/>)}
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

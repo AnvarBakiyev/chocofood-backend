@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chocofood Analytics · Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Extella Design System ───────────────────────────────────────── */
+:root{
+  --bg:     #f7f8fc;
+  --bg2:    #ffffff;
+  --surf:   #ffffff;
+  --bdr:    #e8eaed;
+  --bdr2:   #d1d5db;
+  --txt:    #111827;
+  --txt2:   #374151;
+  --txt3:   #6b7280;
+  --txt4:   #9ca3af;
+
+  --blue:   #2563eb;
+  --bluel:  rgba(37,99,235,.08);
+  --green:  #16a34a;
+  --greenl: rgba(22,163,74,.08);
+  --red:    #dc2626;
+  --redl:   rgba(220,38,38,.08);
+  --amber:  #d97706;
+  --amberl: rgba(217,119,6,.08);
+  --purple: #7c3aed;
+  --purpl:  rgba(124,58,237,.08);
+  --cyan:   #0891b2;
+  --cyanl:  rgba(8,145,178,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt2);font-size:13px;min-height:100vh}
+.mono{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+
+/* TOP */
+.top{
+  background:var(--bg2);border-bottom:1px solid var(--bdr);
+  padding:0 24px;height:48px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-ico{width:26px;height:26px;background:var(--blue);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.logo-t{font-size:13px;font-weight:600;color:var(--txt)}
+.logo-s{font-size:12px;font-weight:400;color:var(--txt3);margin-left:4px}
+.badge-live{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt4)}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%}
+
+/* NAV */
+.nav{
+  display:flex;gap:2px;padding:0 24px;background:var(--bg2);
+  border-bottom:1px solid var(--bdr);overflow-x:auto;flex-shrink:0;
+}
+.nv{
+  padding:0 14px;height:40px;display:flex;align-items:center;
+  border-radius:0;cursor:pointer;font-size:12px;font-weight:500;
+  color:var(--txt3);transition:.12s;white-space:nowrap;
+  border:none;background:none;font-family:inherit;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.nv:hover{color:var(--txt);background:#f9fafb}
+.nv.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+
+/* PAGE */
+.page{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.section{display:none}.section.on{display:flex;flex-direction:column;gap:14px}
+
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;
+  padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:.2s}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);transform:translateY(-1px)}
+
+/* SECTION LABELS */
+.slabel{font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--txt4);margin-bottom:12px}
+
+/* HERO STATS */
+.hs{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.hsc{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;
+  padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.hsl{font-size:10px;color:var(--txt4);font-weight:500;margin-bottom:8px;line-height:1.4}
+.hsv{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;
+  color:var(--txt);line-height:1}
+.hsd{font-size:10px;margin-top:5px;font-family:'JetBrains Mono',monospace}
+.up{color:var(--green)}.dn{color:var(--red)}.nt{color:var(--txt4)}
+
+/* GRID */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* TABLE */
+.tw{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;
+  overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+table{width:100%;border-collapse:collapse}
+thead th{
+  background:#f9fafb;padding:8px 14px;text-align:right;
+  font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--txt4);border-bottom:1px solid var(--bdr);white-space:nowrap;
+}
+thead th:first-child{text-align:left}
+tbody tr{border-bottom:1px solid #f3f4f6;transition:.1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#fafafa}
+tbody tr.subtotal td{background:#f9fafb;font-weight:600;color:var(--txt2)}
+tbody tr.total td{background:#f0f4ff;font-weight:700;color:var(--txt);
+  border-top:1px solid #dbeafe}
+tbody tr.section-header td{
+  background:#f9fafb;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--txt4);
+  padding:5px 14px;border-bottom:1px solid var(--bdr);
+}
+td{padding:8px 14px;text-align:right;color:var(--txt3);font-size:12px;white-space:nowrap}
+td:first-child{text-align:left;color:var(--txt2);font-weight:500}
+td .mono{font-family:'JetBrains Mono',monospace;font-size:11.5px}
+
+/* PILLS */
+.pill{display:inline-block;padding:2px 7px;border-radius:5px;
+  font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.pg{background:var(--greenl);color:var(--green)}
+.pr{background:var(--redl);color:var(--red)}
+.py{background:var(--amberl);color:var(--amber)}
+.pb{background:var(--bluel);color:var(--blue)}
+.pp{background:var(--purpl);color:var(--purple)}
+
+/* BAR */
+.bar{display:flex;align-items:center;gap:7px}
+.bartrack{flex:1;height:4px;background:#f3f4f6;border-radius:2px;overflow:hidden;min-width:60px}
+.barfill{height:100%;border-radius:2px}
+.barval{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt3)}
+
+/* COHORT COLORS */
+.c0{background:rgba(37,99,235,.6);color:#fff}
+.c1{background:rgba(37,99,235,.45);color:#fff}
+.c2{background:rgba(37,99,235,.3);color:#fff}
+.c3{background:rgba(37,99,235,.18);color:var(--txt2)}
+.c4{background:rgba(37,99,235,.1);color:var(--txt3)}
+.c5{background:rgba(37,99,235,.05);color:var(--txt4)}
+.ce{background:transparent;color:var(--bdr2)}
+
+/* BENCHMARK */
+.bm-own{color:var(--blue);font-weight:700}
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:9999;background:#fef3c7;border-bottom:2px solid #f59e0b;padding:6px 16px;font-size:11px;color:#92400e;font-weight:700;letter-spacing:.05em;text-align:center;font-family:-apple-system,sans-serif">&#9888; DEMO &middot; MOCK DATA &middot; For Illustration Purposes Only</div>
+
+<div class="top">
+  <div class="logo">
+    <div class="logo-ico">🛵</div>
+    <span class="logo-t">Chocofood<span class="logo-s">Intelligence</span></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span style="font-size:11px;color:var(--txt4)">Янв–Дек 2024 · Mock · Best practices DoorDash / Uber Eats / Glovo</span>
+    <div class="badge-live"><div class="live-dot"></div>Live mock</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nv on" onclick="show('overview',this)">📋 P&L</button>
+  <button class="nv" onclick="show('uniteco',this)">⚡ Unit Economics</button>
+  <button class="nv" onclick="show('users',this)">👥 Пользователи</button>
+  <button class="nv" onclick="show('cohorts',this)">🔄 Cohorts</button>
+  <button class="nv" onclick="show('restaurants',this)">🍽️ Restaurants</button>
+  <button class="nv" onclick="show('couriers',this)">🛵 Couriers</button>
+  <button class="nv" onclick="show('cities',this)">🏙️ Cities</button>
+  <button class="nv" onclick="show('funnel',this)">🎯 Воронка</button>
+  <button class="nv" onclick="show('benchmark',this)">🌍 Бенчмарк</button>
+</div>
+
+<div class="page">
+
+<!-- P&L -->
+<div id="s-overview" class="section on">
+  <div class="hs">
+    <div class="hsc"><div class="hsl">GMV (Gross Merchandise Value)</div><div class="hsv mono">₸8.4B</div><div class="hsd up">↑ +31.2% YoY</div></div>
+    <div class="hsc"><div class="hsl">Net Revenue (Take Rate 12.4%)</div><div class="hsv mono">₸1.04B</div><div class="hsd up">↑ +28.7% YoY</div></div>
+    <div class="hsc"><div class="hsl">Orders / год</div><div class="hsv mono">2.18M</div><div class="hsd up">↑ +24.5% YoY</div></div>
+    <div class="hsc"><div class="hsl">Medium заказ (AOV)</div><div class="hsv mono">₸3,850</div><div class="hsd up">↑ +5.5% YoY</div></div>
+    <div class="hsc"><div class="hsl">MAU</div><div class="hsv mono">182K</div><div class="hsd up">↑ +19.2% YoY</div></div>
+    <div class="hsc"><div class="hsl">Active restaurantов</div><div class="hsv mono">1,840</div><div class="hsd up">↑ +22.4% YoY</div></div>
+    <div class="hsc"><div class="hsl">Contribution Margin %</div><div class="hsv mono">-9.2%</div><div class="hsd up">↑ vs -15.1% 2023</div></div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr>
+      <th>Метрика</th>
+      <th>Янв</th><th>Фев</th><th>Мар</th><th>Апр</th><th>May</th><th>Июн</th>
+      <th>Июл</th><th>Авг</th><th>Сен</th><th>Окт</th><th>Ноя</th><th>Дек</th>
+      <th>FY 2024</th><th>FY 2023</th><th>YoY</th>
+    </tr></thead>
+    <tbody>
+      <tr class="section-header"><td colspan="16">ОБЪЁМ</td></tr>
+      <tr><td>GMV (₸M)</td><td class="mono">512</td><td class="mono">488</td><td class="mono">611</td><td class="mono">658</td><td class="mono">720</td><td class="mono">790</td><td class="mono">830</td><td class="mono">812</td><td class="mono">744</td><td class="mono">720</td><td class="mono">788</td><td class="mono">727</td><td class="mono"><b>8,400</b></td><td class="mono">6,406</td><td class="mono"><span class="pill pg">+31.2%</span></td></tr>
+      <tr><td>Orders (тыс.)</td><td class="mono">143</td><td class="mono">134</td><td class="mono">172</td><td class="mono">185</td><td class="mono">198</td><td class="mono">212</td><td class="mono">224</td><td class="mono">218</td><td class="mono">196</td><td class="mono">188</td><td class="mono">201</td><td class="mono">209</td><td class="mono"><b>2,180</b></td><td class="mono">1,751</td><td class="mono"><span class="pill pg">+24.5%</span></td></tr>
+      <tr><td>AOV (₸)</td><td class="mono">3,580</td><td class="mono">3,642</td><td class="mono">3,552</td><td class="mono">3,557</td><td class="mono">3,636</td><td class="mono">3,726</td><td class="mono">3,705</td><td class="mono">3,725</td><td class="mono">3,795</td><td class="mono">3,830</td><td class="mono">3,920</td><td class="mono">3,478</td><td class="mono"><b>3,650</b></td><td class="mono">3,459</td><td class="mono"><span class="pill pg">+5.5%</span></td></tr>
+      <tr class="section-header"><td colspan="16">ВЫРУЧКА</td></tr>
+      <tr><td>Комиссия restaurantов (18%)</td><td class="mono">92.2</td><td class="mono">87.8</td><td class="mono">109.9</td><td class="mono">118.4</td><td class="mono">129.6</td><td class="mono">142.2</td><td class="mono">149.4</td><td class="mono">146.2</td><td class="mono">133.9</td><td class="mono">129.6</td><td class="mono">141.8</td><td class="mono">130.9</td><td class="mono"><b>1,512</b></td><td class="mono">1,153</td><td class="mono"><span class="pill pg">+31.1%</span></td></tr>
+      <tr><td>Delivery fee (от users)</td><td class="mono">57.1</td><td class="mono">53.7</td><td class="mono">68.2</td><td class="mono">73.9</td><td class="mono">81.5</td><td class="mono">88.9</td><td class="mono">93.6</td><td class="mono">91.0</td><td class="mono">83.0</td><td class="mono">80.9</td><td class="mono">88.7</td><td class="mono">81.5</td><td class="mono"><b>942</b></td><td class="mono">741</td><td class="mono"><span class="pill pg">+27.1%</span></td></tr>
+      <tr><td>Promoted listings / Ads</td><td class="mono">8.1</td><td class="mono">7.4</td><td class="mono">10.2</td><td class="mono">12.1</td><td class="mono">14.4</td><td class="mono">15.8</td><td class="mono">17.2</td><td class="mono">16.8</td><td class="mono">14.4</td><td class="mono">13.9</td><td class="mono">16.1</td><td class="mono">15.6</td><td class="mono"><b>162</b></td><td class="mono">88</td><td class="mono"><span class="pill pg">+84.1%</span></td></tr>
+      <tr><td>Скидки / субсидии (—)</td><td class="mono">-71.4</td><td class="mono">-68.2</td><td class="mono">-85.5</td><td class="mono">-91.5</td><td class="mono">-108</td><td class="mono">-118</td><td class="mono">-123</td><td class="mono">-119</td><td class="mono">-104</td><td class="mono">-98</td><td class="mono">-110</td><td class="mono">-158</td><td class="mono"><b>-1,254</b></td><td class="mono">-1,071</td><td class="mono"><span class="pill pr">+17.1%</span></td></tr>
+      <tr><td>Delivery cost (—)</td><td class="mono">-59.2</td><td class="mono">-55.9</td><td class="mono">-71.4</td><td class="mono">-75.2</td><td class="mono">-83.1</td><td class="mono">-91.4</td><td class="mono">-96.2</td><td class="mono">-92.8</td><td class="mono">-84.5</td><td class="mono">-82.0</td><td class="mono">-90.1</td><td class="mono">-87.2</td><td class="mono"><b>-969</b></td><td class="mono">-841</td><td class="mono"><span class="pill pr">+15.2%</span></td></tr>
+      <tr class="subtotal"><td>Net Revenue</td><td class="mono">26.8</td><td class="mono">24.8</td><td class="mono">31.4</td><td class="mono">37.7</td><td class="mono">34.4</td><td class="mono">37.5</td><td class="mono">41.0</td><td class="mono">42.2</td><td class="mono">42.8</td><td class="mono">44.4</td><td class="mono">46.5</td><td class="mono">-17.2</td><td class="mono"><b>392</b></td><td class="mono">70</td><td class="mono"><span class="pill pg">+460%</span></td></tr>
+      <tr class="section-header"><td colspan="16">ОПЕРАЦИОННЫЕ РАСХОДЫ</td></tr>
+      <tr><td>Customer Support</td><td class="mono">-12.8</td><td class="mono">-12.1</td><td class="mono">-14.2</td><td class="mono">-15.1</td><td class="mono">-16.2</td><td class="mono">-17.4</td><td class="mono">-18.1</td><td class="mono">-17.8</td><td class="mono">-16.4</td><td class="mono">-15.9</td><td class="mono">-17.2</td><td class="mono">-16.8</td><td class="mono"><b>-192</b></td><td class="mono">-180</td><td class="mono"><span class="pill pr">+6.7%</span></td></tr>
+      <tr><td>Technology & Infrastructure</td><td class="mono">-18.4</td><td class="mono">-18.4</td><td class="mono">-18.4</td><td class="mono">-19.2</td><td class="mono">-19.2</td><td class="mono">-19.2</td><td class="mono">-20.1</td><td class="mono">-20.1</td><td class="mono">-20.1</td><td class="mono">-21.4</td><td class="mono">-21.4</td><td class="mono">-21.4</td><td class="mono"><b>-237</b></td><td class="mono">-198</td><td class="mono"><span class="pill pr">+19.7%</span></td></tr>
+      <tr><td>Sales & Account Management</td><td class="mono">-8.2</td><td class="mono">-8.2</td><td class="mono">-9.1</td><td class="mono">-9.1</td><td class="mono">-10.4</td><td class="mono">-10.4</td><td class="mono">-11.2</td><td class="mono">-11.2</td><td class="mono">-10.8</td><td class="mono">-10.8</td><td class="mono">-11.4</td><td class="mono">-11.4</td><td class="mono"><b>-122</b></td><td class="mono">-104</td><td class="mono"><span class="pill pr">+17.3%</span></td></tr>
+      <tr><td>Marketing & UA</td><td class="mono">-24.1</td><td class="mono">-19.2</td><td class="mono">-28.4</td><td class="mono">-31.2</td><td class="mono">-38.4</td><td class="mono">-41.2</td><td class="mono">-44.8</td><td class="mono">-42.1</td><td class="mono">-36.8</td><td class="mono">-34.2</td><td class="mono">-39.4</td><td class="mono">-51.2</td><td class="mono"><b>-431</b></td><td class="mono">-390</td><td class="mono"><span class="pill pr">+10.5%</span></td></tr>
+      <tr><td>G&A</td><td class="mono">-14.2</td><td class="mono">-14.2</td><td class="mono">-14.2</td><td class="mono">-14.8</td><td class="mono">-14.8</td><td class="mono">-14.8</td><td class="mono">-15.4</td><td class="mono">-15.4</td><td class="mono">-15.4</td><td class="mono">-16.1</td><td class="mono">-16.1</td><td class="mono">-16.1</td><td class="mono"><b>-181</b></td><td class="mono">-162</td><td class="mono"><span class="pill pr">+11.7%</span></td></tr>
+      <tr class="total"><td>Contribution Margin (₸M)</td><td class="mono">-50.9</td><td class="mono">-47.3</td><td class="mono">-52.9</td><td class="mono">-51.7</td><td class="mono">-64.6</td><td class="mono">-65.5</td><td class="mono">-68.6</td><td class="mono">-64.4</td><td class="mono">-56.7</td><td class="mono">-54.0</td><td class="mono">-58.0</td><td class="mono">-113.9</td><td class="mono"><b>-770</b></td><td class="mono">-964</td><td class="mono"><span class="pill pg">улучш.</span></td></tr>
+      <tr class="total"><td>Contribution Margin %</td><td class="mono">-9.9%</td><td class="mono">-9.7%</td><td class="mono">-8.7%</td><td class="mono">-7.9%</td><td class="mono">-9.0%</td><td class="mono">-8.3%</td><td class="mono">-8.3%</td><td class="mono">-7.9%</td><td class="mono">-7.6%</td><td class="mono">-7.5%</td><td class="mono">-7.4%</td><td class="mono">-15.7%</td><td class="mono"><b>-9.2%</b></td><td class="mono">-15.1%</td><td class="mono"><span class="pill pg">+5.9pp</span></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- UNIT ECONOMICS -->
+<div id="s-uniteco" class="section">
+  <div class="hs" style="grid-template-columns:repeat(6,1fr)">
+    <div class="hsc"><div class="hsl">Revenue per Order</div><div class="hsv mono">₸179</div><div class="hsd up">↑ vs ₸40 (2023)</div></div>
+    <div class="hsc"><div class="hsl">CM per Order</div><div class="hsv mono">-₸353</div><div class="hsd up">↑ vs -₸550 (2023)</div></div>
+    <div class="hsc"><div class="hsl">Delivery Cost per Order</div><div class="hsv mono">₸444</div><div class="hsd up">↓ vs ₸481 (2023)</div></div>
+    <div class="hsc"><div class="hsl">Take Rate</div><div class="hsv mono">12.4%</div><div class="hsd up">↑ vs 11.8% (2023)</div></div>
+    <div class="hsc"><div class="hsl">Subsidy per Order</div><div class="hsv mono">₸575</div><div class="hsd nt">↓ vs ₸612</div></div>
+    <div class="hsc"><div class="hsl">LTV / CAC</div><div class="hsv mono">2.4×</div><div class="hsd up">↑ vs 1.4× (2023)</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="slabel">⚡ Per Order Waterfall</div>
+      <div class="tw"><table>
+        <thead><tr><th>Компонент</th><th>₸ / заказ</th><th>% GMV</th><th>YoY</th><th>Benchmark</th></tr></thead>
+        <tbody>
+          <tr class="section-header"><td colspan="5">ДОХОДНАЯ ЧАСТЬ</td></tr>
+          <tr><td>GMV</td><td class="mono">3,850</td><td class="mono">100%</td><td>—</td><td class="mono">100%</td></tr>
+          <tr><td>Restaurant commission (18%)</td><td class="mono">+693</td><td class="mono">+18.0%</td><td class="mono"><span class="pill pg">+0.5pp</span></td><td class="mono">20–30%</td></tr>
+          <tr><td>Delivery fee</td><td class="mono">+432</td><td class="mono">+11.2%</td><td class="mono"><span class="pill pg">+0.8pp</span></td><td class="mono">8–14%</td></tr>
+          <tr><td>Ads / Promoted</td><td class="mono">+74</td><td class="mono">+1.9%</td><td class="mono"><span class="pill pg">+0.7pp</span></td><td class="mono">1–3%</td></tr>
+          <tr class="subtotal"><td>Gross Revenue</td><td class="mono">+1,199</td><td class="mono">+31.1%</td><td><span class="pill pg">+2.0pp</span></td><td class="mono">28–35%</td></tr>
+          <tr class="section-header"><td colspan="5">РАСХОДНАЯ ЧАСТЬ</td></tr>
+          <tr><td>Скидки и промо (—)</td><td class="mono">-575</td><td class="mono">-14.9%</td><td class="mono"><span class="pill pg">-1.8pp</span></td><td class="mono">-8–12%</td></tr>
+          <tr><td>Delivery cost (—)</td><td class="mono">-444</td><td class="mono">-11.5%</td><td class="mono"><span class="pill pg">-0.9pp</span></td><td class="mono">-10–16%</td></tr>
+          <tr><td>Payment processing (—)</td><td class="mono">-53</td><td class="mono">-1.4%</td><td class="mono nt">0pp</td><td class="mono">-1.2–2%</td></tr>
+          <tr><td>Customer support (—)</td><td class="mono">-88</td><td class="mono">-2.3%</td><td class="mono"><span class="pill pg">-0.3pp</span></td><td class="mono">-1.5–3%</td></tr>
+          <tr class="total"><td>Contribution Margin</td><td class="mono">-353</td><td class="mono">-9.2%</td><td><span class="pill pg">+5.9pp</span></td><td class="mono">0–5%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="slabel">💰 CAC & LTV по каналам</div>
+      <div class="tw"><table>
+        <thead><tr><th>Канал</th><th>CAC</th><th>12M LTV</th><th>LTV/CAC</th><th>% new</th><th>Payback</th></tr></thead>
+        <tbody>
+          <tr><td>Organic / WoM</td><td class="mono">₸0</td><td class="mono">₸8,420</td><td class="mono"><span class="pill pg">∞</span></td><td class="mono">22%</td><td class="mono">—</td></tr>
+          <tr><td>SEO / App Store</td><td class="mono">₸890</td><td class="mono">₸7,240</td><td class="mono"><span class="pill pg">8.1×</span></td><td class="mono">14%</td><td>1.8M</td></tr>
+          <tr><td>Social (Instagram/TikTok)</td><td class="mono">₸2,140</td><td class="mono">₸5,810</td><td class="mono"><span class="pill pg">2.7×</span></td><td class="mono">28%</td><td>4.4M</td></tr>
+          <tr><td>Performance / Google</td><td class="mono">₸3,280</td><td class="mono">₸6,120</td><td class="mono"><span class="pill py">1.9×</span></td><td class="mono">18%</td><td>6.4M</td></tr>
+          <tr><td>Referral</td><td class="mono">₸1,120</td><td class="mono">₸7,890</td><td class="mono"><span class="pill pg">7.0×</span></td><td class="mono">9%</td><td>2.2M</td></tr>
+          <tr><td>Influencer</td><td class="mono">₸4,820</td><td class="mono">₸4,100</td><td class="mono"><span class="pill pr">0.85×</span></td><td class="mono">6%</td><td>∞</td></tr>
+          <tr><td>SMS / Push Reactivation</td><td class="mono">₸380</td><td class="mono">₸3,240</td><td class="mono"><span class="pill pg">8.5×</span></td><td class="mono">—</td><td>0.9M</td></tr>
+          <tr class="subtotal"><td>Blended</td><td class="mono">₸2,620</td><td class="mono">₸6,180</td><td class="mono"><span class="pill py">2.4×</span></td><td class="mono">100%</td><td>5.1M</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- USERS -->
+<div id="s-users" class="section">
+  <div class="hs" style="grid-template-columns:repeat(6,1fr)">
+    <div class="hsc"><div class="hsl">MAU</div><div class="hsv mono">182K</div><div class="hsd up">↑ +19.2% YoY</div></div>
+    <div class="hsc"><div class="hsl">DAU / MAU Stickiness</div><div class="hsv mono">0.14</div><div class="hsd up">↑ vs 0.11</div></div>
+    <div class="hsc"><div class="hsl">Orders / MAU / мес</div><div class="hsv mono">1.97×</div><div class="hsd up">↑ vs 1.72×</div></div>
+    <div class="hsc"><div class="hsl">Monthly Churn</div><div class="hsv mono">11.4%</div><div class="hsd up">↓ vs 14.8%</div></div>
+    <div class="hsc"><div class="hsl">NPS</div><div class="hsv mono">42</div><div class="hsd up">↑ vs 31</div></div>
+    <div class="hsc"><div class="hsl">CSAT</div><div class="hsv mono">4.21/5</div><div class="hsd up">↑ vs 3.89</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="slabel">👥 Сегментация по частоте</div>
+      <div class="tw"><table>
+        <thead><tr><th>Сегмент</th><th>Orders/mo</th><th>Users</th><th>% Users</th><th>% GMV</th><th>AOV</th><th>LTV 12M</th><th>Churn</th></tr></thead>
+        <tbody>
+          <tr><td>🏆 Power Users</td><td class="mono">8+</td><td class="mono">14,200</td><td class="mono">7.8%</td><td class="mono"><span class="pill pg">38.2%</span></td><td class="mono">₸4,820</td><td class="mono">₸48,200</td><td class="mono"><span class="pill pg">3.2%</span></td></tr>
+          <tr><td>⭐ Heavy Users</td><td class="mono">4–7</td><td class="mono">28,400</td><td class="mono">15.6%</td><td class="mono"><span class="pill pg">31.4%</span></td><td class="mono">₸4,240</td><td class="mono">₸28,400</td><td class="mono"><span class="pill pg">6.8%</span></td></tr>
+          <tr><td>📦 Regular</td><td class="mono">2–3</td><td class="mono">52,100</td><td class="mono">28.6%</td><td class="mono">21.8%</td><td class="mono">₸3,640</td><td class="mono">₸11,800</td><td class="mono"><span class="pill py">12.4%</span></td></tr>
+          <tr><td>🌱 Casual</td><td class="mono">1</td><td class="mono">60,800</td><td class="mono">33.4%</td><td class="mono">7.2%</td><td class="mono">₸3,120</td><td class="mono">₸4,200</td><td class="mono"><span class="pill pr">24.8%</span></td></tr>
+          <tr><td>😴 Dormant 60d+</td><td class="mono">0</td><td class="mono">26,500</td><td class="mono">14.6%</td><td class="mono">1.4%</td><td class="mono">—</td><td class="mono">₸800</td><td class="mono"><span class="pill pr">62.1%</span></td></tr>
+          <tr class="total"><td>Total</td><td>—</td><td class="mono">182,000</td><td class="mono">100%</td><td class="mono">100%</td><td class="mono">₸3,850</td><td class="mono">₸6,180</td><td class="mono">11.4%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="slabel">📱 Retention по сегментам</div>
+      <div class="tw"><table>
+        <thead><tr><th>Сегмент</th><th>M0</th><th>M1</th><th>M3</th><th>M6</th><th>M12</th></tr></thead>
+        <tbody>
+          <tr><td>🏆 Power</td><td class="mono c0">100%</td><td class="mono c0">94%</td><td class="mono c1">88%</td><td class="mono c1">82%</td><td class="mono c1">76%</td></tr>
+          <tr><td>⭐ Heavy</td><td class="mono c0">100%</td><td class="mono c2">78%</td><td class="mono c2">61%</td><td class="mono c3">52%</td><td class="mono c3">44%</td></tr>
+          <tr><td>📦 Regular</td><td class="mono c0">100%</td><td class="mono c3">58%</td><td class="mono c3">38%</td><td class="mono c4">28%</td><td class="mono c4">21%</td></tr>
+          <tr><td>🌱 Casual</td><td class="mono c0">100%</td><td class="mono c4">32%</td><td class="mono c5">16%</td><td class="mono c5">10%</td><td class="mono c5">7%</td></tr>
+          <tr class="subtotal"><td>Blended</td><td class="mono c0">100%</td><td class="mono c3">54%</td><td class="mono c4">34%</td><td class="mono c4">26%</td><td class="mono c5">19%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- COHORTS -->
+<div id="s-cohorts" class="section">
+  <div class="slabel">🔄 Cohortный анализ — Retention по monthу первого заказа · 2024</div>
+  <div class="tw"><table>
+    <thead><tr><th>Cohortа</th><th>Users</th><th>M0</th><th>M1</th><th>M2</th><th>M3</th><th>M4</th><th>M5</th><th>M6</th><th>M7</th><th>M8</th><th>M9</th><th>M10</th><th>M11</th><th>LTV 12M</th></tr></thead>
+    <tbody>
+      <tr><td>Янв 2024</td><td class="mono">18,412</td><td class="mono c0">100%</td><td class="mono c2">48%</td><td class="mono c3">36%</td><td class="mono c3">31%</td><td class="mono c3">29%</td><td class="mono c4">26%</td><td class="mono c4">24%</td><td class="mono c4">22%</td><td class="mono c4">21%</td><td class="mono c4">20%</td><td class="mono c4">19%</td><td class="mono c5">18%</td><td class="mono">₸5,840</td></tr>
+      <tr><td>Фев 2024</td><td class="mono">15,108</td><td class="mono c0">100%</td><td class="mono c2">46%</td><td class="mono c3">35%</td><td class="mono c3">30%</td><td class="mono c4">27%</td><td class="mono c4">25%</td><td class="mono c4">23%</td><td class="mono c4">21%</td><td class="mono c4">20%</td><td class="mono c4">19%</td><td class="mono c5">18%</td><td class="mono ce">—</td><td class="mono">₸5,620</td></tr>
+      <tr><td>Мар 2024</td><td class="mono">22,814</td><td class="mono c0">100%</td><td class="mono c2">51%</td><td class="mono c2">38%</td><td class="mono c3">33%</td><td class="mono c3">30%</td><td class="mono c3">28%</td><td class="mono c4">25%</td><td class="mono c4">23%</td><td class="mono c4">22%</td><td class="mono c4">21%</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono">₸6,120</td></tr>
+      <tr><td>Апр 2024</td><td class="mono">19,240</td><td class="mono c0">100%</td><td class="mono c2">49%</td><td class="mono c3">37%</td><td class="mono c3">32%</td><td class="mono c3">29%</td><td class="mono c4">26%</td><td class="mono c4">24%</td><td class="mono c4">22%</td><td class="mono c4">21%</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono">₸5,980</td></tr>
+      <tr><td>May 2024</td><td class="mono">24,180</td><td class="mono c0">100%</td><td class="mono c2">53%</td><td class="mono c2">41%</td><td class="mono c3">35%</td><td class="mono c3">31%</td><td class="mono c3">28%</td><td class="mono c4">26%</td><td class="mono c4">24%</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono">₸6,340</td></tr>
+      <tr><td>Июн 2024</td><td class="mono">24,208</td><td class="mono c0">100%</td><td class="mono c2">55%</td><td class="mono c2">42%</td><td class="mono c3">36%</td><td class="mono c3">33%</td><td class="mono c3">29%</td><td class="mono c4">27%</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono">₸6,480</td></tr>
+      <tr><td>Июл 2024</td><td class="mono">26,420</td><td class="mono c0">100%</td><td class="mono c2">57%</td><td class="mono c2">44%</td><td class="mono c3">38%</td><td class="mono c3">34%</td><td class="mono c3">30%</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono">₸6,720</td></tr>
+      <tr><td>Дек 2024</td><td class="mono">28,408</td><td class="mono c0">100%</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono ce">—</td><td class="mono">—</td></tr>
+      <tr class="total"><td>Avg 2024</td><td>—</td><td class="mono c0">100%</td><td class="mono c2">53%</td><td class="mono c2">40%</td><td class="mono c3">34%</td><td class="mono c3">30%</td><td class="mono c4">28%</td><td class="mono c4">25%</td><td class="mono c4">23%</td><td class="mono c4">21%</td><td class="mono c4">20%</td><td class="mono c5">19%</td><td class="mono c5">18%</td><td class="mono">₸6,280</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- RESTAURANTS -->
+<div id="s-restaurants" class="section">
+  <div class="hs" style="grid-template-columns:repeat(5,1fr)">
+    <div class="hsc"><div class="hsl">Active restaurantов</div><div class="hsv mono">1,840</div><div class="hsd up">↑ +22.4% YoY</div></div>
+    <div class="hsc"><div class="hsl">New / мес (avg)</div><div class="hsv mono">48</div><div class="hsd up">↑ vs 32 (2023)</div></div>
+    <div class="hsc"><div class="hsl">Restaurant NPS</div><div class="hsv mono">38</div><div class="hsd up">↑ vs 24 (2023)</div></div>
+    <div class="hsc"><div class="hsl">Commission Rate avg</div><div class="hsv mono">18.0%</div><div class="hsd up">↑ vs 17.2%</div></div>
+    <div class="hsc"><div class="hsl">Top-20 % GMV</div><div class="hsv mono">34.2%</div><div class="hsd nt">concentration risk</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="slabel">🍜 GMV по кухням</div>
+      <div class="tw"><table>
+        <thead><tr><th>Кухня</th><th>Restaurantов</th><th>% GMV</th><th>AOV</th><th>Rating</th><th>Churn r-nt</th></tr></thead>
+        <tbody>
+          <tr><td>🍕 Пицца / Бургеры</td><td class="mono">342</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:28%;background:var(--blue)"></div></div><span class="barval">28.4%</span></div></td><td class="mono">₸3,420</td><td class="mono">4.42</td><td class="mono"><span class="pill pg">4.2%</span></td></tr>
+          <tr><td>🍜 Азиатская</td><td class="mono">284</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:18%;background:var(--purple)"></div></div><span class="barval">18.1%</span></div></td><td class="mono">₸4,180</td><td class="mono">4.38</td><td class="mono"><span class="pill pg">3.8%</span></td></tr>
+          <tr><td>🥙 Казахская / Шашлык</td><td class="mono">318</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:17%;background:var(--amber)"></div></div><span class="barval">16.8%</span></div></td><td class="mono">₸4,820</td><td class="mono">4.51</td><td class="mono"><span class="pill pg">3.1%</span></td></tr>
+          <tr><td>☕ Кофе / Десерты</td><td class="mono">198</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:12%;background:var(--cyan)"></div></div><span class="barval">11.9%</span></div></td><td class="mono">₸2,840</td><td class="mono">4.61</td><td class="mono"><span class="pill pg">2.8%</span></td></tr>
+          <tr><td>🥗 ЗОЖ / Салаты</td><td class="mono">142</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:9%;background:var(--green)"></div></div><span class="barval">9.2%</span></div></td><td class="mono">₸3,980</td><td class="mono">4.48</td><td class="mono"><span class="pill pg">2.4%</span></td></tr>
+          <tr><td>🛒 Dark Kitchen</td><td class="mono">124</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:5%;background:var(--txt4)"></div></div><span class="barval">4.8%</span></div></td><td class="mono">₸3,240</td><td class="mono">4.12</td><td class="mono"><span class="pill py">8.4%</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="slabel">🏆 Топ-10 restaurantов</div>
+      <div class="tw"><table>
+        <thead><tr><th>#</th><th>Restaurant</th><th>GMV / год</th><th>Orders</th><th>AOV</th><th>Comm%</th></tr></thead>
+        <tbody>
+          <tr><td class="mono" style="color:var(--amber);font-weight:700">1</td><td>KFC Kazakhstan</td><td class="mono">₸184M</td><td class="mono">72,400</td><td class="mono">₸2,541</td><td class="mono">15%</td></tr>
+          <tr><td class="mono" style="color:var(--amber);font-weight:700">2</td><td>Burger King KZ</td><td class="mono">₸162M</td><td class="mono">64,800</td><td class="mono">₸2,500</td><td class="mono">15%</td></tr>
+          <tr><td class="mono" style="color:var(--amber);font-weight:700">3</td><td>Domino's Pizza</td><td class="mono">₸148M</td><td class="mono">38,420</td><td class="mono">₸3,852</td><td class="mono">18%</td></tr>
+          <tr><td class="mono">4</td><td>Caravan (шашлык)</td><td class="mono">₸128M</td><td class="mono">24,800</td><td class="mono">₸5,161</td><td class="mono">20%</td></tr>
+          <tr><td class="mono">5</td><td>Dastarkhan</td><td class="mono">₸118M</td><td class="mono">22,100</td><td class="mono">₸5,339</td><td class="mono">20%</td></tr>
+          <tr><td class="mono">6</td><td>Pizza Hut KZ</td><td class="mono">₸112M</td><td class="mono">29,800</td><td class="mono">₸3,758</td><td class="mono">18%</td></tr>
+          <tr><td class="mono">7</td><td>Самса Хаус</td><td class="mono">₸88M</td><td class="mono">42,200</td><td class="mono">₸2,085</td><td class="mono">22%</td></tr>
+          <tr><td class="mono">8</td><td>Wok Street</td><td class="mono">₸82M</td><td class="mono">19,400</td><td class="mono">₸4,227</td><td class="mono">20%</td></tr>
+          <tr><td class="mono">9</td><td>Plov Center</td><td class="mono">₸78M</td><td class="mono">14,200</td><td class="mono">₸5,493</td><td class="mono">22%</td></tr>
+          <tr><td class="mono">10</td><td>Starbucks KZ</td><td class="mono">₸74M</td><td class="mono">28,800</td><td class="mono">₸2,569</td><td class="mono">15%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- COURIERS -->
+<div id="s-couriers" class="section">
+  <div class="hs" style="grid-template-columns:repeat(6,1fr)">
+    <div class="hsc"><div class="hsl">Active курьеров/день</div><div class="hsv mono">824</div><div class="hsd up">↑ +18.2% YoY</div></div>
+    <div class="hsc"><div class="hsl">Orders / курьер / день</div><div class="hsv mono">8.1</div><div class="hsd up">↑ vs 7.2</div></div>
+    <div class="hsc"><div class="hsl">Доход курьера / день</div><div class="hsv mono">₸14,820</div><div class="hsd up">↑ +8.4% YoY</div></div>
+    <div class="hsc"><div class="hsl">On-time rate</div><div class="hsv mono">83.8%</div><div class="hsd up">↑ vs 76.2%</div></div>
+    <div class="hsc"><div class="hsl">Courier Churn / мес</div><div class="hsv mono">14.2%</div><div class="hsd up">↓ vs 19.8%</div></div>
+    <div class="hsc"><div class="hsl">Avg delivery (мин)</div><div class="hsv mono">28.8</div><div class="hsd up">↓ vs 34.2</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="slabel">⏱️ Delivery Time Distribution</div>
+      <div class="tw"><table>
+        <thead><tr><th>Диапазон</th><th>% заказов</th><th>NPS impact</th><th>Refund rate</th></tr></thead>
+        <tbody>
+          <tr><td>⚡ &lt;20 мин</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:14%;background:var(--green)"></div></div><span class="barval">14.2%</span></div></td><td><span class="pill pg">+82 NPS</span></td><td class="mono">0.1%</td></tr>
+          <tr><td>✅ 20–30 мин</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:42%;background:var(--green)"></div></div><span class="barval">42.1%</span></div></td><td><span class="pill pg">+61 NPS</span></td><td class="mono">0.4%</td></tr>
+          <tr><td>🟡 30–40 мин</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:28%;background:var(--amber)"></div></div><span class="barval">27.8%</span></div></td><td><span class="pill py">+28 NPS</span></td><td class="mono">1.2%</td></tr>
+          <tr><td>⚠️ 40–60 мин</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:12%;background:var(--red)"></div></div><span class="barval">12.4%</span></div></td><td><span class="pill pr">-14 NPS</span></td><td class="mono">4.8%</td></tr>
+          <tr><td>🔴 60+ мин</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:3.5%;background:var(--red)"></div></div><span class="barval">3.5%</span></div></td><td><span class="pill pr">-48 NPS</span></td><td class="mono">18.2%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="slabel">🕐 Orders по времени суток</div>
+      <div class="tw"><table>
+        <thead><tr><th>Слот</th><th>% заказов</th><th>AOV</th><th>Wait</th><th>Утилизация</th></tr></thead>
+        <tbody>
+          <tr><td>Завтрак 07–10</td><td class="mono">8.2%</td><td class="mono">₸2,840</td><td class="mono">22 мин</td><td class="mono"><span class="pill pg">81%</span></td></tr>
+          <tr><td>🍽️ Обед 12–14</td><td class="mono"><b>28.4%</b></td><td class="mono">₸3,480</td><td class="mono">34 мин</td><td class="mono"><span class="pill pr">94%</span></td></tr>
+          <tr><td>День 14–18</td><td class="mono">14.8%</td><td class="mono">₸3,240</td><td class="mono">26 мин</td><td class="mono"><span class="pill pg">72%</span></td></tr>
+          <tr><td>🌙 Ужин 18–21</td><td class="mono"><b>32.2%</b></td><td class="mono">₸4,280</td><td class="mono">32 мин</td><td class="mono"><span class="pill pr">91%</span></td></tr>
+          <tr><td>Поздний 21–00</td><td class="mono">9.8%</td><td class="mono">₸4,820</td><td class="mono">28 мин</td><td class="mono"><span class="pill py">68%</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- CITIES -->
+<div id="s-cities" class="section">
+  <div class="slabel">🏙️ Performance по citiesм · 2024</div>
+  <div class="tw"><table>
+    <thead><tr><th>Город</th><th>GMV (₸M)</th><th>% GMV</th><th>Orders</th><th>AOV</th><th>MAU</th><th>CM%</th><th>On-time%</th><th>Avg мин</th><th>NPS</th><th>YoY</th></tr></thead>
+    <tbody>
+      <tr><td>🌆 Almaty</td><td class="mono">5,460</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:65%;background:var(--blue)"></div></div><span class="barval">65%</span></div></td><td class="mono">1,418K</td><td class="mono">₸3,850</td><td class="mono">118K</td><td class="mono"><span class="pill py">-7.2%</span></td><td class="mono"><span class="pill pg">84.2%</span></td><td class="mono">28.4</td><td class="mono">44</td><td class="mono"><span class="pill pg">+28.4%</span></td></tr>
+      <tr><td>🏛️ Astana</td><td class="mono">1,680</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:20%;background:var(--purple)"></div></div><span class="barval">20%</span></div></td><td class="mono">436K</td><td class="mono">₸3,853</td><td class="mono">36K</td><td class="mono"><span class="pill pr">-12.8%</span></td><td class="mono"><span class="pill py">78.1%</span></td><td class="mono">32.1</td><td class="mono">38</td><td class="mono"><span class="pill pg">+41.2%</span></td></tr>
+      <tr><td>🌇 Shymkent</td><td class="mono">588</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:7%;background:var(--green)"></div></div><span class="barval">7%</span></div></td><td class="mono">168K</td><td class="mono">₸3,500</td><td class="mono">18K</td><td class="mono"><span class="pill pg">-4.8%</span></td><td class="mono"><span class="pill pg">87.4%</span></td><td class="mono">26.8</td><td class="mono">46</td><td class="mono"><span class="pill pg">+58.4%</span></td></tr>
+      <tr><td>🏙️ Aktobe</td><td class="mono">252</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:3%;background:var(--amber)"></div></div><span class="barval">3%</span></div></td><td class="mono">72K</td><td class="mono">₸3,500</td><td class="mono">7.8K</td><td class="mono"><span class="pill pr">-18.4%</span></td><td class="mono"><span class="pill py">75.4%</span></td><td class="mono">34.8</td><td class="mono">34</td><td class="mono"><span class="pill pg">+82.4%</span></td></tr>
+      <tr><td>🌊 Atyrau</td><td class="mono">168</td><td><div class="bar"><div class="bartrack"><div class="barfill" style="width:2%;background:var(--cyan)"></div></div><span class="barval">2%</span></div></td><td class="mono">48K</td><td class="mono">₸3,500</td><td class="mono">5.2K</td><td class="mono"><span class="pill pr">-21.2%</span></td><td class="mono"><span class="pill py">73.8%</span></td><td class="mono">36.4</td><td class="mono">31</td><td class="mono"><span class="pill pg">+94.8%</span></td></tr>
+      <tr class="total"><td>🇰🇿 Итого</td><td class="mono">8,400</td><td class="mono">100%</td><td class="mono">2,178K</td><td class="mono">₸3,857</td><td class="mono">185K</td><td class="mono"><span class="pill py">-9.2%</span></td><td class="mono"><span class="pill pg">83.8%</span></td><td class="mono">28.8</td><td class="mono">42</td><td class="mono"><span class="pill pg">+31.2%</span></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- FUNNEL -->
+<div id="s-funnel" class="section">
+  <div class="g2">
+    <div>
+      <div class="slabel">🎯 Конверсионная воронка · avg мес.</div>
+      <div class="tw"><table>
+        <thead><tr><th>Шаг</th><th>Users</th><th>Conv%</th><th>vs 2023</th><th>Benchmark</th></tr></thead>
+        <tbody>
+          <tr><td>📱 App Opens</td><td class="mono">1,820K</td><td class="mono c0">100%</td><td>—</td><td>—</td></tr>
+          <tr><td>🔍 Browsed menu</td><td class="mono">1,274K</td><td class="mono c2">70.0%</td><td><span class="pill pg">+3.2pp</span></td><td class="mono">72–78%</td></tr>
+          <tr><td>🛒 Added to cart</td><td class="mono">600K</td><td class="mono c3">33.0%</td><td><span class="pill pg">+2.8pp</span></td><td class="mono">35–42%</td></tr>
+          <tr><td>📍 Entered address</td><td class="mono">498K</td><td class="mono c3">27.4%</td><td><span class="pill pg">+1.4pp</span></td><td class="mono">85–92% of cart</td></tr>
+          <tr><td>💳 Checkout started</td><td class="mono">436K</td><td class="mono c4">24.0%</td><td><span class="pill pg">+0.9pp</span></td><td class="mono">87–94% of addr</td></tr>
+          <tr><td>✅ Order placed</td><td class="mono">182K</td><td class="mono c4">10.0%</td><td><span class="pill pg">+1.2pp</span></td><td class="mono">38–46% of chk</td></tr>
+          <tr class="total"><td>✅ Delivered</td><td class="mono">173K</td><td class="mono c4">9.5%</td><td><span class="pill pg">+1.6pp</span></td><td class="mono">9–12%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="slabel">📊 Product Metrics vs Targets</div>
+      <div class="tw"><table>
+        <thead><tr><th>Метрика</th><th>Факт</th><th>Target</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="section-header"><td colspan="4">ENGAGEMENT</td></tr>
+          <tr><td>Sessions per MAU</td><td class="mono">14.2</td><td class="mono">18</td><td><span class="pill py">79%</span></td></tr>
+          <tr><td>Avg session (мин)</td><td class="mono">4.8</td><td class="mono">5.5</td><td><span class="pill py">87%</span></td></tr>
+          <tr><td>Reorder rate</td><td class="mono">34.2%</td><td class="mono">40%</td><td><span class="pill py">86%</span></td></tr>
+          <tr class="section-header"><td colspan="4">QUALITY</td></tr>
+          <tr><td>App Store rating</td><td class="mono">4.3/5</td><td class="mono">4.5</td><td><span class="pill py">96%</span></td></tr>
+          <tr><td>Wrong order rate</td><td class="mono">1.8%</td><td class="mono">&lt;1.5%</td><td><span class="pill pr">↑</span></td></tr>
+          <tr><td>Refund rate</td><td class="mono">2.4%</td><td class="mono">&lt;2%</td><td><span class="pill pr">↑</span></td></tr>
+          <tr class="section-header"><td colspan="4">MONETIZATION</td></tr>
+          <tr><td>Premium subscribers</td><td class="mono">12,400</td><td class="mono">20K</td><td><span class="pill pr">62%</span></td></tr>
+          <tr><td>Ads CTR</td><td class="mono">3.2%</td><td class="mono">3.5%</td><td><span class="pill pg">91%</span></td></tr>
+          <tr><td>Cross-sell attach</td><td class="mono">8.4%</td><td class="mono">15%</td><td><span class="pill pr">56%</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- BENCHMARK -->
+<div id="s-benchmark" class="section">
+  <div class="slabel">🌍 Конкурентный бенчмарк · Food Delivery 2024</div>
+  <div class="tw"><table>
+    <thead><tr>
+      <th>Метрика</th>
+      <th>DoorDash<br><span style="font-weight:400;color:var(--txt4)">USA</span></th>
+      <th>Uber Eats<br><span style="font-weight:400;color:var(--txt4)">Global</span></th>
+      <th>Glovo<br><span style="font-weight:400;color:var(--txt4)">EU/CIS</span></th>
+      <th>Яндекс Еда<br><span style="font-weight:400;color:var(--txt4)">RU/CIS</span></th>
+      <th>Delivery Hero<br><span style="font-weight:400;color:var(--txt4)">MENA/EU</span></th>
+      <th class="bm-own">Chocofood<br><span style="font-weight:400;color:var(--blue)">KZ 2024</span></th>
+      <th>Gap / Comment</th>
+    </tr></thead>
+    <tbody>
+      <tr class="section-header"><td colspan="8">SCALE & GROWTH</td></tr>
+      <tr><td>GMV Growth YoY</td><td class="mono">+21%</td><td class="mono">+18%</td><td class="mono">+28%</td><td class="mono">+34%</td><td class="mono">+8%</td><td class="mono bm-own">+31.2%</td><td>✅ Выше DD/UE, на уровне Glovo</td></tr>
+      <tr class="section-header"><td colspan="8">ECONOMICS</td></tr>
+      <tr><td>Take Rate</td><td class="mono">14.8%</td><td class="mono">17.2%</td><td class="mono">16.4%</td><td class="mono">18.1%</td><td class="mono">15.2%</td><td class="mono bm-own">12.4%</td><td>⚠️ Ниже на 2–6pp</td></tr>
+      <tr><td>Contribution Margin %</td><td class="mono">+4.8%</td><td class="mono">+2.1%</td><td class="mono">-1.2%</td><td class="mono">-3.4%</td><td class="mono">-5.8%</td><td class="mono bm-own">-9.2%</td><td>🔴 Большой gap. Цель: 0% к 2026</td></tr>
+      <tr><td>Delivery Cost % GMV</td><td class="mono">8.4%</td><td class="mono">11.2%</td><td class="mono">13.8%</td><td class="mono">12.4%</td><td class="mono">14.8%</td><td class="mono bm-own">11.5%</td><td>✅ На уровне Uber Eats</td></tr>
+      <tr><td>Subsidy % GMV</td><td class="mono">8.2%</td><td class="mono">10.4%</td><td class="mono">14.8%</td><td class="mono">16.2%</td><td class="mono">18.4%</td><td class="mono bm-own">14.9%</td><td>⚠️ Цель: ≤12%</td></tr>
+      <tr class="section-header"><td colspan="8">USERS</td></tr>
+      <tr><td>Monthly Order Frequency</td><td class="mono">4.2×</td><td class="mono">3.8×</td><td class="mono">3.2×</td><td class="mono">3.9×</td><td class="mono">2.8×</td><td class="mono bm-own">1.97×</td><td>🔴 Главный gap. Low freq = low LTV</td></tr>
+      <tr><td>M1 Retention</td><td class="mono">62%</td><td class="mono">58%</td><td class="mono">52%</td><td class="mono">55%</td><td class="mono">48%</td><td class="mono bm-own">53%</td><td>✅ Medium уровень</td></tr>
+      <tr><td>M6 Retention</td><td class="mono">38%</td><td class="mono">34%</td><td class="mono">28%</td><td class="mono">32%</td><td class="mono">24%</td><td class="mono bm-own">25%</td><td>⚠️ Ниже топов на 10pp+</td></tr>
+      <tr><td>LTV / CAC</td><td class="mono">6.8×</td><td class="mono">5.2×</td><td class="mono">3.8×</td><td class="mono">4.4×</td><td class="mono">2.8×</td><td class="mono bm-own">2.4×</td><td>⚠️ Цель: 4× через growth freq</td></tr>
+      <tr class="section-header"><td colspan="8">OPERATIONS</td></tr>
+      <tr><td>Avg Delivery Time (мин)</td><td class="mono">28</td><td class="mono">30</td><td class="mono">32</td><td class="mono">35</td><td class="mono">38</td><td class="mono bm-own">28.8</td><td>✅ Конкурентное преимущество!</td></tr>
+      <tr><td>Orders per Courier / day</td><td class="mono">14.2</td><td class="mono">12.8</td><td class="mono">10.4</td><td class="mono">11.2</td><td class="mono">9.8</td><td class="mono bm-own">8.1</td><td>🔴 Gap 25–75%. Ключ к unit eco</td></tr>
+      <tr class="section-header"><td colspan="8">MONETIZATION MATURITY</td></tr>
+      <tr><td>Ads Revenue % Net Revenue</td><td class="mono">28.4%</td><td class="mono">22.1%</td><td class="mono">12.8%</td><td class="mono">9.4%</td><td class="mono">8.2%</td><td class="mono bm-own">5.8%</td><td>🔴 Огромный upside. DD: реклама спасает P&L</td></tr>
+      <tr><td>Subscription penetration</td><td class="mono">DashPass 42%</td><td class="mono">One 31%</td><td class="mono">18%</td><td class="mono">Я+ 24%</td><td class="mono">12%</td><td class="mono bm-own">6.8%</td><td>🔴 Subscription — главный retention tool</td></tr>
+    </tbody>
+  </table></div>
+  <div style="font-size:10px;color:var(--txt4);padding:4px 0">* DoorDash, Uber Eats — публичные отчёты 2024. Остальные — оценки аналитиков.</div>
+</div>
+
+</div><!-- /page -->
+<script>
+function show(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nv').forEach(n=>n.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  el.classList.add('on');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chocofamily Brain</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--gold:#F5A623;--gl:#FFF3DC;--green:#22c55e;--greenl:#dcfce7;--red:#ef4444;--redl:#fee2e2;--blue:#3b82f6;--bluel:#dbeafe;--ink:#0f172a;--ink2:#334155;--ink3:#64748b;--cream:#f8fafc;--bdr:#e2e8f0;--w:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--ink);height:100vh;overflow:hidden;display:flex}
+.sb{width:232px;background:var(--ink);height:100vh;display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-ico{width:36px;height:36px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-t{color:#fff;font-weight:700;font-size:15px}
+.logo-s{color:rgba(255,255,255,.4);font-size:11px}
+.sb-nav{flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav-sec{color:rgba(255,255,255,.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:10px 8px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;transition:all .15s;user-select:none}
+.ni:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.ni.active{background:rgba(245,166,35,.15);color:var(--gold)}
+.ni-ico{font-size:15px;width:18px;text-align:center}
+.ni-badge{margin-left:auto;background:rgba(245,166,35,.2);color:var(--gold);font-size:10px;padding:2px 6px;border-radius:10px;font-family:'JetBrains Mono',monospace}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.25);font-size:11px;line-height:1.5}
+.main{flex:1;height:100vh;overflow-y:auto;padding:28px 32px}
+.sec{display:none;animation:fi .2s ease}
+.sec.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ph{margin-bottom:24px}
+.pt{font-size:22px;font-weight:700;margin-bottom:3px}
+.ps{font-size:13px;color:var(--ink3)}
+.card{background:var(--w);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);padding:22px;transition:all .2s}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-1px)}
+.ct{font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.stat{background:var(--w);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);padding:18px 20px}
+.sl{font-size:11px;color:var(--ink3);font-weight:500;margin-bottom:7px}
+.sv{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:500;line-height:1}
+.sc{font-size:11px;margin-top:5px}
+.sc.up{color:var(--green)}.sc.dn{color:var(--red)}.sc.nt{color:var(--ink3)}
+.badge{padding:3px 8px;border-radius:6px;font-size:11px;font-weight:500}
+.bblu{background:var(--bluel);color:#1d4ed8}
+.bgry{background:#f1f5f9;color:var(--ink3)}
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);border-radius:16px;padding:28px 32px;color:#fff;margin-bottom:20px}
+.hero h1{font-size:20px;font-weight:700;margin-bottom:7px}
+.hero p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.65;max-width:600px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);padding:4px 12px;border-radius:20px;font-size:12px}
+.prow{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--bdr)}
+.prow:last-child{border-bottom:none}
+.pico{font-size:20px;width:26px;text-align:center}
+.pname{font-size:13px;font-weight:600}
+.ptype{font-size:11px;color:var(--ink3)}
+.spill{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.s-act{background:var(--greenl);color:#166534}
+.s-cls{background:var(--redl);color:#991b1b}
+.s-pvt{background:var(--gl);color:#92400e}
+.arc{background:var(--w);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);padding:22px;margin-bottom:14px}
+.arc-t{font-size:14px;font-weight:700;margin-bottom:3px}
+.arc-s{font-size:11.5px;color:var(--ink3);margin-bottom:14px}
+.arc-steps{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.av{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding:5px 11px;border-radius:7px;background:var(--cream);text-align:center}
+.av.g{background:var(--greenl)}.av.r{background:var(--redl)}.av.y{background:var(--gl)}
+.ayr{font-size:10px;color:var(--ink3);margin-top:2px;text-align:center}
+.arr{color:var(--ink3);font-size:13px}
+.ib{border-left:3px solid var(--gold);padding:11px 14px;background:var(--gl);border-radius:0 8px 8px 0;margin-top:14px}
+.ib.r{border-left-color:var(--red);background:var(--redl)}
+.ib.g{border-left-color:var(--green);background:var(--greenl)}
+.ib.b{border-left-color:var(--blue);background:var(--bluel)}
+.ibl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:4px}
+.ibt{font-size:13px;color:var(--ink2);line-height:1.55}
+.tl-yr{min-width:178px;flex-shrink:0;padding-right:14px}
+.tl-h{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--gold)}
+.tev{background:var(--w);border-radius:9px;padding:10px 12px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,.05);border-left:3px solid var(--bdr);font-size:12px;transition:all .15s}
+.tev:hover{transform:translateX(2px);box-shadow:0 2px 7px rgba(0,0,0,.1)}
+.tev.p{border-left-color:var(--green)}.tev.n{border-left-color:var(--red)}.tev.m{border-left-color:var(--gold)}.tev.b{border-left-color:var(--blue)}
+.tev-t{font-weight:600;color:var(--ink);margin-bottom:2px}
+.tev-m{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink3)}
+.ch-w{position:relative;height:220px}
+.pc{background:var(--w);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);padding:22px;transition:all .2s}
+.pc:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
+.pc-h{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.pc-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.pc-n{font-size:15px;font-weight:700}.pc-ty{font-size:11.5px;color:var(--ink3)}
+.pm{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.pmi{background:var(--cream);border-radius:8px;padding:9px 11px}
+.pml{font-size:10.5px;color:var(--ink3);margin-bottom:3px}
+.pmv{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500}
+.pi{font-size:12.5px;color:var(--ink2);line-height:1.55;padding-top:12px;border-top:1px solid var(--bdr)}
+.asrch{width:100%;padding:10px 16px;border:1px solid var(--bdr);border-radius:10px;font-size:13.5px;font-family:inherit;background:var(--w);color:var(--ink);outline:none;margin-bottom:16px;transition:border-color .15s}
+.asrch:focus{border-color:var(--gold)}
+.alist{display:flex;flex-direction:column;gap:7px}
+.aitem{background:var(--w);border-radius:11px;padding:14px 18px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .15s}
+.aitem:hover{box-shadow:0 3px 10px rgba(0,0,0,.08);transform:translateY(-1px)}
+.ahdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px}
+.atitle{font-size:13.5px;font-weight:600}
+.ameta{display:flex;gap:5px;flex-wrap:wrap}
+.afin{font-size:11.5px;color:var(--ink3);margin-bottom:5px}
+.ains{display:flex;flex-wrap:wrap;gap:5px}
+.itag{font-size:10.5px;color:var(--ink3);background:var(--cream);padding:2px 7px;border-radius:5px}
+</style>
+</head>
+<body>
+<div style="display:flex;height:100vh;overflow:hidden">
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="logo-row">
+      <div class="logo-ico">🍫</div>
+      <div><div class="logo-t">Chocofamily</div><div class="logo-s">Company Brain</div></div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="nav-sec">Обзор</div>
+    <div class="ni active" onclick="show('overview',this)"><span class="ni-ico">🏠</span>Главная</div>
+    <div class="ni" onclick="show('arcs',this)"><span class="ni-ico">📈</span>Нарративы роста</div>
+    <div class="nav-sec">Аналитика</div>
+    <div class="ni" onclick="show('timeline',this)"><span class="ni-ico">📅</span>Временная линейка</div>
+    <div class="ni" onclick="show('metrics',this)"><span class="ni-ico">📊</span>Метрики</div>
+    <div class="nav-sec">Продукты</div>
+    <div class="ni" onclick="show('products',this)"><span class="ni-ico">🧩</span>Все продукты</div>
+    <div class="nav-sec">Архив</div>
+    <div class="ni" onclick="show('archive',this)"><span class="ni-ico">📋</span>НС Презентации<span class="ni-badge">32</span></div>
+  </nav>
+  <div class="sb-foot">2019–2025 · 32 документов<br>Powered by Personal AGI</div>
+</aside>
+<main class="main">
+
+<section id="s-overview" class="sec on">
+  <div class="hero">
+    <h1>Chocofamily Holding — Kazakhstan's lifestyle ecosystem</h1>
+    <p>Экосистема lifestyle-продуктов с 2012 года: купоны (Chocolife), QR-лояльность для HoReCa (Smart Restaurant), доставка еды (Chocofood, закрыт), экспресс-доставка (Raketa, закрыта), трэвел (Aviata/Chocotravel), финтех (ioka, spinoff). Миссия — суперапп №1 в Казахстане.</p>
+    <div class="chips">
+      <span class="chip">📍 Алматы</span>
+      <span class="chip">📅 Основана 2012</span>
+      <span class="chip">🏢 6 бизнес-юнитов</span>
+      <span class="chip">💰 Оценка $65M (2020)</span>
+      <span class="chip">📊 6 лет данных · 32 НС документов</span>
+    </div>
+  </div>
+  <div class="g4">
+    <div class="stat"><div class="sl">MAU Ecosystem (пик)</div><div class="sv">587K</div><div class="sc up">↑ +120% YoY авг 2022</div></div>
+    <div class="stat"><div class="sl">Monthly Buyers (пик)</div><div class="sv">35.4K</div><div class="sc up">↑ август 2023</div></div>
+    <div class="stat"><div class="sl">Chocolife CLV (2021)</div><div class="sv">14,562₸</div><div class="sc up">↑ CLV/CAC = 21×</div></div>
+    <div class="stat"><div class="sl">SR Retention M+12</div><div class="sv">83%</div><div class="sc up">↑ октябрь 2024</div></div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="ct">Ключевой нарратив</div><p style="font-size:13.5px;color:var(--ink2);line-height:1.65"><b>Сильный builder, слабый scaler.</b> Каждый продукт доказывал ценность на ранней аудитории — но при масштабировании либо ломалась экономика, либо не справлялись продажи.</p></div>
+    <div class="card"><div class="ct">Главная сила</div><p style="font-size:13.5px;color:var(--ink2);line-height:1.65"><b>Product retention.</b> SR M+12 retention 83%. Chocolife CLV/CPA = 21×. Когда клиент подключился — он остаётся. Проблема в подключении новых.</p></div>
+    <div class="card"><div class="ct">Главная слабость</div><p style="font-size:13.5px;color:var(--ink2);line-height:1.65"><b>GTM execution.</b> SR Окт'24: 36% от плана. New visitors -44% YoY (2023). CAC Chocolife вырос в 4.3× за 3 года. 32% мёртвых точек в SR.</p></div>
+  </div>
+  <div class="card">
+    <div class="ct">Продуктовый портфель</div>
+    <div class="prow"><span class="pico">🎫</span><div style="flex:1"><div class="pname">Chocolife.me</div><div class="ptype">Купонный маркетплейс — core продукт с 2012</div></div><span class="spill s-act">Активен</span></div>
+    <div class="prow"><span class="pico">🍽️</span><div style="flex:1"><div class="pname">Rahmet → Smart Restaurant</div><div class="ptype">QR-меню + SaaS лояльность для ресторанов</div></div><span class="spill s-act">Активен · +207% vs план 2025</span></div>
+    <div class="prow"><span class="pico">🛵</span><div style="flex:1"><div class="pname">Chocofood</div><div class="ptype">Доставка еды из ресторанов</div></div><span class="spill s-cls">Закрыт 2025</span></div>
+    <div class="prow"><span class="pico">🚀</span><div style="flex:1"><div class="pname">Raketa</div><div class="ptype">Экспресс-доставка B2B</div></div><span class="spill s-cls">Закрыт 2025</span></div>
+    <div class="prow"><span class="pico">✈️</span><div style="flex:1"><div class="pname">Chocotravel / Aviata</div><div class="ptype">Онлайн-бронирование авиа и отелей</div></div><span class="spill s-act">Активен</span></div>
+    <div class="prow"><span class="pico">💳</span><div style="flex:1"><div class="pname">ioka</div><div class="ptype">Платёжный шлюз / финтех инфраструктура</div></div><span class="spill s-pvt">Spinoff</span></div>
+  </div>
+</section>
+
+<section id="s-arcs" class="sec">
+  <div class="ph"><div class="pt">Нарративы роста</div><div class="ps">Ключевые дуги развития компании 2019–2025</div></div>
+  <div class="arc">
+    <div class="arc-t">📈 Ecosystem MAU: взлёт и остановка</div>
+    <div class="arc-s">Monthly Active Visitors суперапп-экосистемы</div>
+    <div class="arc-steps">
+      <div><div class="av">113K</div><div class="ayr">2021 старт</div></div><div class="arr">→</div>
+      <div><div class="av">267K</div><div class="ayr">авг 2021</div></div><div class="arr">→</div>
+      <div><div class="av g">587K</div><div class="ayr">авг 2022 <b style="color:var(--green)">+120%</b></div></div><div class="arr">→</div>
+      <div><div class="av r">55K</div><div class="ayr">сен 2023 ⚠️</div></div>
+    </div>
+    <div class="ib"><div class="ibl">Что произошло</div><div class="ibt">MAU удвоился за 2022. К 2023 новые посетители упали на 44% г/г — воронка иссякла. Покупатели при этом выросли на 22% — компания "выжимала" старую базу без пополнения. Aviata и Lensmark убраны из суперапп как неэффективные.</div></div>
+  </div>
+  <div class="arc">
+    <div class="arc-t">💸 CAC Chocolife: удорожание привлечения ×4.3</div>
+    <div class="arc-s">Стоимость привлечения клиента в KZT</div>
+    <div class="arc-steps">
+      <div><div class="av">684₸</div><div class="ayr">2019</div></div><div class="arr">→</div>
+      <div><div class="av">655₸</div><div class="ayr">2020</div></div><div class="arr">→</div>
+      <div><div class="av">684₸</div><div class="ayr">2021</div></div><div class="arr">→</div>
+      <div><div class="av y">1,821₸</div><div class="ayr">март 2022</div></div><div class="arr">→</div>
+      <div><div class="av r">2,916₸</div><div class="ayr">апр 2022 <b style="color:var(--red)">×4.3</b></div></div>
+    </div>
+    <div class="ib r"><div class="ibl">Тревожный сигнал</div><div class="ibt">CAC вырос в 4.3× за 3 года. Скачок 1.6× за один месяц (март→апрель 2022) — без объяснений. Одновременно payment success rate 54.7% — половина платежей не проходила. Реальный CAC был ещё выше.</div></div>
+  </div>
+  <div class="arc">
+    <div class="arc-t">🚀 Raketa: экономика, которой не было</div>
+    <div class="arc-s">Прибыль с одной доставки и рыночная позиция</div>
+    <div class="arc-steps">
+      <div><div class="av">50/день</div><div class="ayr">объём 2021</div></div><div class="arr">·</div>
+      <div><div class="av">1,150₸</div><div class="ayr">себестоимость</div></div><div class="arr">·</div>
+      <div><div class="av">99₸</div><div class="ayr">прибыль 8.6%</div></div><div class="arr">→</div>
+      <div><div class="av g">22.84%</div><div class="ayr">Алматы '22</div></div><div class="arr">vs</div>
+      <div><div class="av r">2.74%</div><div class="ayr">Астана '22</div></div>
+    </div>
+    <div class="ib r"><div class="ibl">Структурная проблема</div><div class="ibt">Прибыльна только в Алматы при высокой плотности. В Астане — почти нуль. 0.03% рынка при 192K доставок/день в стране. Без эффекта масштаба закрытие в 2025 было правильным решением.</div></div>
+  </div>
+  <div class="arc">
+    <div class="arc-t">🍽️ Smart Restaurant: хороший продукт, слабые продажи</div>
+    <div class="arc-s">От Rahmet (2019) до SR (2025) — путь трансформации</div>
+    <div class="arc-steps">
+      <div><div class="av">28K</div><div class="ayr">пилот 2019</div></div><div class="arr">→</div>
+      <div><div class="av g">₸90K/точка</div><div class="ayr">лучший мес. дек'22</div></div><div class="arr">→</div>
+      <div><div class="av r">36% плана</div><div class="ayr">79/217 лок. окт'24</div></div><div class="arr">→</div>
+      <div><div class="av g">+207% vs план</div><div class="ayr">2025 разворот 🔥</div></div>
+    </div>
+    <div class="ib g"><div class="ibl">Разворот в 2025</div><div class="ibt">Retention 83% у долгосрочных клиентов доказывает: продукт работает. Проблема была в онбординге (24 дня) и продажах (36% плана). После перестройки команды — +207% vs план. Один из самых позитивных разворотов в истории компании.</div></div>
+  </div>
+  <div class="arc">
+    <div class="arc-t">🌱 COVID удар и восстановление Chocolife</div>
+    <div class="arc-s">Выручка и аудитория 2019–2022</div>
+    <div class="arc-steps">
+      <div><div class="av">204K users</div><div class="ayr">2019</div></div><div class="arr">→</div>
+      <div><div class="av r">117K users</div><div class="ayr">2020 COVID -43%</div></div><div class="arr">·</div>
+      <div><div class="av r">89.9M₸/мес</div><div class="ayr">выручка -58%</div></div><div class="arr">→</div>
+      <div><div class="av g">633K users</div><div class="ayr">2021 recovery</div></div>
+    </div>
+    <div class="ib"><div class="ibl">Контекст</div><div class="ibt">Chocolife как купонный офлайн-бизнес оказался хрупким перед COVID. Выручка -58% за год. Восстановление к 2021 было реальным (633K users, CLV 14,562₸), но зависимость от офлайн-трафика осталась структурной проблемой.</div></div>
+  </div>
+</section>
+
+<section id="s-timeline" class="sec">
+  <div class="ph"><div class="pt">Временная линейка</div><div class="ps">Ключевые события 2019–2025</div></div>
+  <div class="card" style="overflow-x:auto;padding:22px 26px">
+    <div style="display:flex;gap:0;min-width:1080px">
+      <div class="tl-yr">
+        <div class="tl-h">2019</div>
+        <div class="tev m"><div class="tev-t">ChocoEcoSystem запуск</div><div class="tev-m">Единый профиль, CRM, billing</div></div>
+        <div class="tev p"><div class="tev-t">Rahmet пилот</div><div class="tev-m">28K→37K · ср. чек 3.02</div></div>
+        <div class="tev b"><div class="tev-t">Data Science</div><div class="tev-m">LTV, churn, recommendations</div></div>
+        <div class="tev b"><div class="tev-t">Интеграция 2GIS</div><div class="tev-m">85K брендов, 2.9M KZT</div></div>
+      </div>
+      <div class="tl-yr" style="padding:0 14px">
+        <div class="tl-h" style="border-bottom-color:var(--red)">2020</div>
+        <div class="tev n"><div class="tev-t">💀 COVID удар</div><div class="tev-m">Chocolife: -58% выручки</div></div>
+        <div class="tev n"><div class="tev-t">Аудитория -43%</div><div class="tev-m">204K → 117K users</div></div>
+        <div class="tev m"><div class="tev-t">ioka запуск</div><div class="tev-m">Target 800M KZT GMV/мес</div></div>
+        <div class="tev n"><div class="tev-t">HR кризис</div><div class="tev-m">Текучка топов, зарплаты</div></div>
+      </div>
+      <div class="tl-yr" style="padding:0 14px">
+        <div class="tl-h" style="border-bottom-color:var(--green)">2021</div>
+        <div class="tev p"><div class="tev-t">Chocolife recovery</div><div class="tev-m">633K users · CLV 14,562₸</div></div>
+        <div class="tev m"><div class="tev-t">SuperApp vision 🚀</div><div class="tev-m">Цель: MAU 9M к 2024</div></div>
+        <div class="tev b"><div class="tev-t">Raketa launch</div><div class="tev-m">50 del/day · margin 8.6%</div></div>
+        <div class="tev m"><div class="tev-t">Pitch Deck Q2</div><div class="tev-m">Раунд финансирования</div></div>
+      </div>
+      <div class="tl-yr" style="padding:0 14px">
+        <div class="tl-h" style="border-bottom-color:var(--blue)">2022</div>
+        <div class="tev p"><div class="tev-t">MAU Ecosystem ×2</div><div class="tev-m">267K → 587K +120% YoY</div></div>
+        <div class="tev n"><div class="tev-t">⚠️ CAC crisis</div><div class="tev-m">684 → 2,916₸ (×4.3)</div></div>
+        <div class="tev n"><div class="tev-t">Payment problem</div><div class="tev-m">Success rate 54.7%</div></div>
+        <div class="tev p"><div class="tev-t">Choco DR best month</div><div class="tev-m">₸90K profit/точка (дек)</div></div>
+      </div>
+      <div class="tl-yr" style="padding:0 14px">
+        <div class="tl-h" style="border-bottom-color:var(--ink3)">2023</div>
+        <div class="tev n"><div class="tev-t">Воронка иссякает</div><div class="tev-m">New visitors -44% YoY</div></div>
+        <div class="tev p"><div class="tev-t">Buyers растут</div><div class="tev-m">29K → 35K (+22%)</div></div>
+        <div class="tev b"><div class="tev-t">Aviata → выход из app</div><div class="tev-m">Убрали как неэффективную</div></div>
+        <div class="tev n"><div class="tev-t">Choco DR -16%</div><div class="tev-m">фев'23 vs фев'22</div></div>
+      </div>
+      <div class="tl-yr" style="padding-left:14px">
+        <div class="tl-h">2024–2025</div>
+        <div class="tev n"><div class="tev-t">SR: 36% от плана</div><div class="tev-m">79/217 лок. MAU -23%</div></div>
+        <div class="tev n"><div class="tev-t">Chocofood закрыт</div><div class="tev-m">Высокая конкуренция</div></div>
+        <div class="tev n"><div class="tev-t">Raketa закрыта</div><div class="tev-m">Нет экономики регионах</div></div>
+        <div class="tev p"><div class="tev-t">SR разворот 🔥</div><div class="tev-m">Rahmet +207% vs план</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s-metrics" class="sec">
+  <div class="ph"><div class="pt">Ключевые метрики</div><div class="ps">Динамика показателей 2021–2024</div></div>
+  <div class="g2">
+    <div class="card"><div class="ct">Ecosystem Monthly Visitors</div><div class="ch-w"><canvas id="ch-mau"></canvas></div></div>
+    <div class="card"><div class="ct">Monthly Buyers (Ecosystem)</div><div class="ch-w"><canvas id="ch-buyers"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Chocolife CAC (₸)</div><div class="ch-w"><canvas id="ch-cac"></canvas></div></div>
+    <div class="card"><div class="ct">Юнит-экономика Raketa (₸/доставку)</div><div class="ch-w"><canvas id="ch-raketa"></canvas></div></div>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <div class="ct">Choco Smart Restaurant — план vs факт (октябрь 2024)</div>
+    <div style="display:flex;gap:28px;margin-top:10px;flex-wrap:wrap;align-items:center">
+      <div style="flex:2;min-width:220px">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:9px">Локации подписаны (факт vs план)</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+          <div style="font-size:11px;width:36px;color:var(--ink3)">Факт</div>
+          <div style="flex:1;background:var(--bdr);border-radius:4px;height:16px;overflow:hidden"><div style="width:36%;background:var(--red);height:100%;border-radius:4px"></div></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500">79</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="font-size:11px;width:36px;color:var(--ink3)">План</div>
+          <div style="flex:1;background:var(--bdr);border-radius:4px;height:16px;overflow:hidden"><div style="width:100%;background:var(--green);height:100%;border-radius:4px;opacity:.25"></div></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500">217</div>
+        </div>
+      </div>
+      <div style="text-align:center"><div style="font-size:11px;color:var(--ink3);margin-bottom:5px">MAU Loss</div><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;color:var(--red)">-23%</div></div>
+      <div style="text-align:center"><div style="font-size:11px;color:var(--ink3);margin-bottom:5px">Активация (дней)</div><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;color:var(--gold)">24</div></div>
+      <div style="text-align:center"><div style="font-size:11px;color:var(--ink3);margin-bottom:5px">Мёртвых точек</div><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;color:var(--red)">32%</div></div>
+      <div style="text-align:center"><div style="font-size:11px;color:var(--ink3);margin-bottom:5px">Retention M+12</div><div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;color:var(--green)">83%</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="s-products" class="sec">
+  <div class="ph"><div class="pt">Продукты</div><div class="ps">Детальный анализ каждого бизнес-юнита</div></div>
+  <div class="g2">
+    <div class="pc">
+      <div class="pc-h"><div class="pc-ico" style="background:var(--gl)">🎫</div><div><div class="pc-n">Chocolife.me</div><div class="pc-ty">Купонный маркетплейс</div></div><span class="spill s-act" style="margin-left:auto">Активен</span></div>
+      <div class="pm">
+        <div class="pmi"><div class="pml">Unique users (пик)</div><div class="pmv">633K</div></div>
+        <div class="pmi"><div class="pml">CLV (2021)</div><div class="pmv">14,562₸</div></div>
+        <div class="pmi"><div class="pml">CAC пик (апр'22)</div><div class="pmv">2,916₸</div></div>
+        <div class="pmi"><div class="pml">Net margin март'22</div><div class="pmv">45.6M₸</div></div>
+      </div>
+      <div class="pi">CLV/CPA = 21× — отличный payback. CAC вырос в 4.3× за 3 года, сигнализируя о насыщении канала. Retention 45% (2021). Payment success 54.7% в апр'22 — системная проблема платёжного шлюза.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-h"><div class="pc-ico" style="background:var(--greenl)">🍽️</div><div><div class="pc-n">Smart Restaurant</div><div class="pc-ty">QR-меню + SaaS лояльность</div></div><span class="spill s-act" style="margin-left:auto">Активен</span></div>
+      <div class="pm">
+        <div class="pmi"><div class="pml">Пилот 2019</div><div class="pmv">37K customers</div></div>
+        <div class="pmi"><div class="pml">Лучший мес. дек'22</div><div class="pmv">₸90K/точка</div></div>
+        <div class="pmi"><div class="pml">Retention M+12</div><div class="pmv">83%</div></div>
+        <div class="pmi"><div class="pml">Рост 2025</div><div class="pmv">+207% vs план</div></div>
+      </div>
+      <div class="pi">Продукт работает — retention 83%. Проблема — онбординг 24 дня и продажи (36% плана окт'24). После перестройки 2025: +207% vs план. Самый убедительный разворот в портфеле.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-h"><div class="pc-ico" style="background:var(--redl)">🚀</div><div><div class="pc-n">Raketa</div><div class="pc-ty">Экспресс-доставка B2B</div></div><span class="spill s-cls" style="margin-left:auto">Закрыт 2025</span></div>
+      <div class="pm">
+        <div class="pmi"><div class="pml">Запуск 2021</div><div class="pmv">50 дост/день</div></div>
+        <div class="pmi"><div class="pml">Margin Алматы'22</div><div class="pmv">22.84%</div></div>
+        <div class="pmi"><div class="pml">Margin Астана'22</div><div class="pmv">2.74%</div></div>
+        <div class="pmi"><div class="pml">Доля рынка</div><div class="pmv">0.03%</div></div>
+      </div>
+      <div class="pi">Прибыль 99₸ с доставки при себестоимости 1,150₸ (8.6% margin). Жизнеспособна только в Алматы. В Астане — почти нулевая маржа. Закрытие в 2025 — правильное решение.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-h"><div class="pc-ico" style="background:var(--bluel)">💳</div><div><div class="pc-n">ioka</div><div class="pc-ty">Платёжный шлюз / финтех</div></div><span class="spill s-pvt" style="margin-left:auto">Spinoff</span></div>
+      <div class="pm">
+        <div class="pmi"><div class="pml">Target GMV 2020</div><div class="pmv">800M₸/мес</div></div>
+        <div class="pmi"><div class="pml">Target GMV 2022</div><div class="pmv">3B₸/мес</div></div>
+        <div class="pmi"><div class="pml">Availability</div><div class="pmv">99.98%</div></div>
+        <div class="pmi"><div class="pml">Конверсия</div><div class="pmv">до 99%</div></div>
+      </div>
+      <div class="pi">Запущена как внутренняя инфраструктура — выросла в независимый B2B-продукт. Рынок e-commerce KZ: 2,929B₸. Стала spinoff-ом, нашла собственный путь вне экосистемы.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-h"><div class="pc-ico" style="background:#f0fdf4">🌐</div><div><div class="pc-n">Choco Ecosystem</div><div class="pc-ty">SuperApp + платформа</div></div><span class="spill s-act" style="margin-left:auto">Активен</span></div>
+      <div class="pm">
+        <div class="pmi"><div class="pml">MAU пик авг'22</div><div class="pmv">587K</div></div>
+        <div class="pmi"><div class="pml">Buyers пик авг'23</div><div class="pmv">35.4K</div></div>
+        <div class="pmi"><div class="pml">New visitors сен'23</div><div class="pmv">-44% YoY</div></div>
+        <div class="pmi"><div class="pml">Цель MAU 2024</div><div class="pmv">9,000K</div></div>
+      </div>
+      <div class="pi">MAU удвоился в 2022, но к 2023 новые посетители упали -44% YoY. Покупатели выросли (+22%) за счёт старой базы. Цель 9M MAU к 2024 — не достигнута.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-h"><div class="pc-ico" style="background:#fff7ed">✈️</div><div><div class="pc-n">Aviata / Chocotravel</div><div class="pc-ty">Онлайн-трэвел агент</div></div><span class="spill s-act" style="margin-left:auto">Активен</span></div>
+      <div class="pm">
+        <div class="pmi"><div class="pml">SuperApp статус</div><div class="pmv">Удалён 2023</div></div>
+        <div class="pmi"><div class="pml">Транзакции'23</div><div class="pmv">Снижаются</div></div>
+        <div class="pmi"><div class="pml">Причина падения</div><div class="pmv">Cashback ↓</div></div>
+        <div class="pmi"><div class="pml">Канал</div><div class="pmv">Standalone</div></div>
+      </div>
+      <div class="pi">Убрана из суперапп в 2023 как неэффективная для экосистемы. Транзакции падают из-за изменения cashback-программы. Работает как standalone product.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-archive" class="sec">
+  <div class="ph"><div class="pt">Архив НС Презентаций</div><div class="ps">32 документов · 2019–2024 · Набсовет Chocofamily · обработано GPT-4o-mini</div></div>
+  <input type="text" class="asrch" placeholder="Поиск по названию, продукту, периоду, инсайтам..." oninput="filterA(this.value)">
+  <div class="alist" id="alist"><div class="aitem"><div class="ahdr"><span class="atitle">Monthly Meeting June</span><div class="ameta"><span class="badge bblu">Chocofamily</span><span class="badge bgry">June</span></div></div><div class="ains"><span class="itag">Persistence in user engagement despite challenges</span><span class="itag">Importance of personalized messaging</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">ChocoEcoSystem август</span><div class="ameta"><span class="badge bblu">ChocoEcoSystem</span><span class="badge bgry">August 2019</span></div></div><div class="ains"><span class="itag">Development of a unified IT platform is crucial for data integration.</span><span class="itag">Operational cost optimization through standardization is essential.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">ChocoEcoSystem сентябрь</span><div class="ameta"><span class="badge bblu">ChocoEcoSystem</span><span class="badge bgry">September 2019</span></div></div><div class="ains"><span class="itag">Unified profile development is crucial for data aggregation and user management.</span><span class="itag">The wallet will serve as a central payment method across projects, enhancing use</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Rahmet для Наб Совета</span><div class="ameta"><span class="badge bblu">Chocofamily</span><span class="badge bgry">01.01 - 01.07.2019</span></div></div><div class="ains"><span class="itag">Need to improve conversion rates to meet expectations.</span><span class="itag">High customer loss rate indicates potential issues with retention.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Choco DS для правления</span><div class="ameta"><span class="badge bblu">Chocolife, Chocofood, Rahmet</span><span class="badge bgry">March 2019</span></div></div><div class="ains"><span class="itag">Simply hiring data scientists is not enough; a cultural shift is necessary for e</span><span class="itag">Top management must recognize the risks of inaction regarding new technologies.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Стратегия 2020 Ecosystem</span><div class="ameta"><span class="badge bblu">ChocoEcoSystem</span><span class="badge bgry">2019</span></div></div><p class="afin">💰 Integration with 2GIS API costs 2,927,366 tenge for access to 85,000 brands for one year</p><div class="ains"><span class="itag">Need for a centralized partner management system to reduce time and errors</span><span class="itag">Integration with external data sources can streamline operations</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Choco Data Science 2020</span><div class="ameta"><span class="badge bblu">Choco Data Science</span><span class="badge bgry">2019-2020</span></div></div><div class="ains"><span class="itag">Successful implementation of cloud storage with BigQuery</span><span class="itag">Development of multiple analytical systems and models across business units</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">HR стратегия 2020</span><div class="ameta"><span class="badge bblu">Chocofamily</span><span class="badge bgry">2020</span></div></div><div class="ains"><span class="itag">Employee retention is critical, especially for key personnel.</span><span class="itag">There is a significant need for improved communication and understanding of comp</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">iDoctor правление</span><div class="ameta"><span class="badge bblu">iDoctor</span><span class="badge bgry">October/2023</span></div></div><p class="afin">💰 EBITDA of 22,075,000 with a significant overspend in various areas</p><div class="ains"><span class="itag">Traffic is below target at 94%</span><span class="itag">Sales performance is significantly below plan at 20%</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">ioka strategy 2020-2022</span><div class="ameta"><span class="badge bblu">IOKA</span><span class="badge bgry">2020-2022</span></div></div><p class="afin">💰 {'market_size_global': '2.383 трлн. $', 'market_size_RK': '2929 млрд. тг'}</p><div class="ains"><span class="itag">The e-commerce market is growing, presenting opportunities for expansion.</span><span class="itag">Security in online payments and AI in fraud prevention are critical trends.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Стратегия Chocolife 21-25</span><div class="ameta"><span class="badge bblu">Chocolife.me</span><span class="badge bgry">2021-2025</span></div></div><p class="afin">💰 {'2019_sales': 867198315, '2020_sales': 367364760, '2019_marketing': 122625658, '2020_marketing': 39020739}</p><div class="ains"><span class="itag">Chocolife.me is more effective than Instagram in terms of conversion rates.</span><span class="itag">User retention has improved compared to the previous year but is lower than two </span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Экосистема Choco 5</span><div class="ameta"><span class="badge bblu">Choco SuperApp and ChocoPay</span><span class="badge bgry">2022-2024</span></div></div><div class="ains"><span class="itag">Focus on increasing active users and user engagement to enhance the ecosystem's </span><span class="itag">Separate teams for B2C and B2B SuperApp to enhance user experience and merchant </span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Choco Business</span><div class="ameta"><span class="badge bblu">Choco Business</span><span class="badge bgry">April/2023</span></div></div><div class="ains"><span class="itag">Current strategy is focused on signing contracts for all projects.</span><span class="itag">Team KPIs are being monitored.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">RAKETA strategy 2022-2024</span><div class="ameta"><span class="badge bblu">Technological express delivery</span><span class="badge bgry">2022-2024</span></div></div><p class="afin">💰 {'revenue_per_delivery': 1190, 'cost_per_delivery': 1150, 'profit_per_delivery': 99}</p><div class="ains"><span class="itag">Express delivery significantly reduces purchase abandonment rates for online sto</span><span class="itag">Technological advancements in tracking and reporting are key differentiators.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">RAKETA strategy 2022-2024 fix3</span><div class="ameta"><span class="badge bblu">Raketa</span><span class="badge bgry">2022-2024</span></div></div><p class="afin">💰 {'delivery_cost': '1000 тенге', 'annual_market_volume': '70 billion тенге', 'unit_economics': {'revenue_per_de</p><div class="ains"><span class="itag">The market for fast delivery is rapidly growing, driven by consumer demand for s</span><span class="itag">Raketa's pricing strategy is competitive, allowing for customer acquisition from</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">НС Chocolife Март 2022</span><div class="ameta"><span class="badge bblu">Chocolife</span><span class="badge bgry">March 2022</span></div></div><p class="afin">💰 Net margin increased to 45.6 million Tenge, with a 26.67% growth year-over-year.</p><div class="ains"><span class="itag">Significant growth in active users and orders compared to March 2021</span><span class="itag">Improved engagement metrics on social media platforms</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">НС Chocolife Апрель 2022</span><div class="ameta"><span class="badge bblu">Chocolife</span><span class="badge bgry">April 2022</span></div></div><p class="afin">💰 {'Total Revenue': '31.8 million', 'Average Revenue per Promotion': 45400, 'Net Margin': '31.8 million'}</p><div class="ains"><span class="itag">Active promotions have increased significantly compared to previous months.</span><span class="itag">User engagement metrics (MAU, WAU, DAU) have improved year-over-year.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">02.06.22</span><div class="ameta"><span class="badge bblu">IDOCTOR</span><span class="badge bgry">06/2022</span></div></div><div class="ains"><span class="itag">Patients prefer recommendations from acquaintances when choosing a doctor</span><span class="itag">A significant number of patients undergo procedures not recommended by scientifi</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Ежемесячная планерка Рахмет Март 2022</span><div class="ameta"><span class="badge bblu">Рахмет</span><span class="badge bgry">March 2022</span></div></div><div class="ains"><span class="itag">Real-time digitization of each stream's value for merchants is crucial</span><span class="itag">All changes to the interface must go through A/B testing</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Прибыль Chocofest март 2022</span><div class="ameta"><span class="badge bblu">Chocofest</span><span class="badge bgry">March 2022</span></div></div><p class="afin">💰 Specific revenue or profit numbers not provided in the content.</p><div class="ains"><span class="itag">Profit provides freedom for experimentation and growth.</span><span class="itag">Understanding and managing expenses is crucial for profitability.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">RAKETA НС AUG22</span><div class="ameta"><span class="badge bblu">Raketa</span><span class="badge bgry">August 2022</span></div></div><p class="afin">💰 Details on financial performance compared to the model</p><div class="ains"><span class="itag">Raketa specializes in express delivery with superior courier service</span><span class="itag">Ability to accept cash on delivery and provide fintech services</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Choco Доставка НС OCT22</span><div class="ameta"><span class="badge bblu">Raketa</span><span class="badge bgry">October 2022</span></div></div><p class="afin">💰 Total margin of 18.8%, with specific margins of 22.84% in Almaty and 2.74% in Astana.</p><div class="ains"><span class="itag">Raketa's unique selling proposition is its superior courier service and fintech </span><span class="itag">Customer loyalty is enhanced through positive purchasing experiences.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">НС декабрь Choco QR DR 2022</span><div class="ameta"><span class="badge bblu">Choco DR & loyalty</span><span class="badge bgry">December 2022</span></div></div><p class="afin">💰 Highest net margin month; ₸90,000 net profit projected from one location with 10 deliveries per day.</p><div class="ains"><span class="itag">December 2022 was the highest revenue month from a single location.</span><span class="itag">Choco DR helped Bahandi retain orders during cashier absence.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Экосистема Choco 9</span><div class="ameta"><span class="badge bblu">Choco Ecosystem and SuperApp</span><span class="badge bgry">Aug 21 - Aug 22</span></div></div><div class="ains"><span class="itag">Significant growth in new users and MAU for both Ecosystem and SuperApp.</span><span class="itag">December saw a spike in user activity due to the introduction of new features.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">НС янв+фев Choco QR DR 2023</span><div class="ameta"><span class="badge bblu">Choco QR & Loyalty</span><span class="badge bgry">January-February 202</span></div></div><p class="afin">💰 Total revenue from WhatsApp campaign was 663,692 KZT, accounting for 4.43% of total revenue.</p><div class="ains"><span class="itag">Choco DR & Loyalty provides a unique service for digitizing customer bases and a</span><span class="itag">The WhatsApp campaign successfully reactivated 20 users, generating significant </span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">НС фев+март Choco QR DR 2023</span><div class="ameta"><span class="badge bblu">Choco DR & Loyalty</span><span class="badge bgry">February/March 2023</span></div></div><p class="afin">💰 Revenue decline of 16% in February 2023 compared to February 2022 and 20% compared to January 2023.</p><div class="ains"><span class="itag">Need to address the decline in revenue and strategize for recovery.</span><span class="itag">Focus on automation and digitalization to enhance customer experience and operat</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Экосистема Choco 17</span><div class="ameta"><span class="badge bblu">SuperApp</span><span class="badge bgry">April 2023</span></div></div><div class="ains"><span class="itag">The overall trend in new buyers has slightly decreased.</span><span class="itag">High availability levels for the app indicate strong technical infrastructure.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Экосистема Choco 18</span><div class="ameta"><span class="badge bblu">Choco Ecosystem</span><span class="badge bgry">May 2023</span></div></div><div class="ains"><span class="itag">Visitor numbers have fluctuated significantly over the past year.</span><span class="itag">Retention rates for monthly visitors show improvement but still need attention.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Экосистема Choco 20</span><div class="ameta"><span class="badge bblu">Chocofood, Aviata, Chocotravel</span><span class="badge bgry">Jul 22 - Jul 23</span></div></div><div class="ains"><span class="itag">Visitor retention improved in recent months.</span><span class="itag">Need for better conversion tracking and metrics integration.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Экосистема Choco 21</span><div class="ameta"><span class="badge bblu">Choco Ecosystem</span><span class="badge bgry">Aug 22 - Aug 23</span></div></div><div class="ains"><span class="itag">Despite a decline in new and monthly visitors, the number of monthly buyers has </span><span class="itag">The accessibility rate of payments has improved, indicating better reliability.</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">Экосистема Choco 22</span><div class="ameta"><span class="badge bblu">Choco Ecosystem</span><span class="badge bgry">Sep 22 - Sep 23</span></div></div><div class="ains"><span class="itag">Significant drop in new and monthly visitors indicates a need for improved marke</span><span class="itag">Monthly buyers have increased, suggesting better conversion despite lower traffi</span></div></div><div class="aitem"><div class="ahdr"><span class="atitle">НС Октябрь 2024 Choco SR</span><div class="ameta"><span class="badge bblu">Choco Smart Restaurant</span><span class="badge bgry">October 2024</span></div></div><p class="afin">💰 Total revenue loss of 3.3 million and a decline in transactions by 593 monthly.</p><div class="ains"><span class="itag">Revenue and transactions are growing due to specific partners like Bahandi and B</span><span class="itag">There is a need to reduce dependency on top partners and diversify the partner b</span></div></div></div>
+</section>
+
+</main>
+</div>
+<script>
+function show(id,el){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on')});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('active')});
+  document.getElementById('s-'+id).classList.add('on');
+  el.classList.add('active');
+  if(id==='metrics'){setTimeout(initCharts,60)}
+}
+function filterA(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('.aitem').forEach(function(el){
+    el.style.display=el.textContent.toLowerCase().indexOf(q)>=0?'':'none'
+  });
+}
+var chartsOk=false;
+function initCharts(){
+  if(chartsOk)return;
+  chartsOk=true;
+  var xTick={font:{family:'JetBrains Mono',size:10},color:'#94a3b8'};
+  var yTick={font:{family:'JetBrains Mono',size:10},color:'#94a3b8'};
+  var tip={backgroundColor:'#0f172a',titleColor:'#fff',bodyColor:'rgba(255,255,255,.7)',padding:10,cornerRadius:8};
+  new Chart(document.getElementById('ch-mau'),{type:'line',data:{labels:['авг 21','дек 21','апр 22','авг 22','янв 23','май 23','сен 23'],datasets:[{data:[267339,320000,450000,587325,480000,380000,55455],borderColor:'#F5A623',backgroundColor:'rgba(245,166,35,.08)',borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#F5A623',tension:.35,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:tip},scales:{x:{grid:{display:false},ticks:xTick},y:{grid:{color:'#f1f5f9'},ticks:yTick}}}});
+  new Chart(document.getElementById('ch-buyers'),{type:'bar',data:{labels:['авг 22','сен 22','апр 23','май 23','авг 23','сен 23'],datasets:[{data:[29056,26379,29518,31000,35437,34293],backgroundColor:'rgba(34,197,94,.7)',borderColor:'#22c55e',borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:tip},scales:{x:{grid:{display:false},ticks:xTick},y:{grid:{color:'#f1f5f9'},ticks:yTick,beginAtZero:true}}}});
+  new Chart(document.getElementById('ch-cac'),{type:'line',data:{labels:['2019','2020','2021','мар 22','апр 22'],datasets:[{data:[684,655,684,1821,2916],borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.08)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#ef4444',tension:.2,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:tip},scales:{x:{grid:{display:false},ticks:xTick},y:{grid:{color:'#f1f5f9'},ticks:yTick,beginAtZero:true}}}});
+  new Chart(document.getElementById('ch-raketa'),{type:'bar',data:{labels:['Себест.','Выручка','Прибыль','Margin ALM','Margin AST'],datasets:[{data:[1150,1190,99,271.96,32.63],backgroundColor:['rgba(239,68,68,.7)','rgba(34,197,94,.7)','rgba(245,166,35,.7)','rgba(59,130,246,.7)','rgba(239,68,68,.4)'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:tip},scales:{x:{grid:{display:false},ticks:xTick},y:{grid:{color:'#f1f5f9'},ticks:yTick,beginAtZero:true}}}});
+}
+</script>
+</body>
+</html>
